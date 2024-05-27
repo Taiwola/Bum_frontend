@@ -59,11 +59,11 @@ export default function Home() {
     </BackgroundGradientAnimation>
 
    {/* about us */}
-      <div className="container bg-transparent mb-4">
+      <div className="container mb-4" id="about">
         <div>
           <h1 className="mt-5 text-center font-bold underline text-4xl">About us</h1>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 mt-5 place-items-center">
+        <div className="grid gap-5 grid-cols-1 md:grid-cols-2 mt-5 place-items-center">
             <div className="mx-auto hidden md:block">
               <img src={About_us} alt="" />
             </div>
@@ -84,39 +84,39 @@ export default function Home() {
       </div>
 
       {/* features */}
-      <div className="container rounded mx-auto px-4 py-8 bg-[#F5F7F8]">
+      <div className="container rounded mx-auto px-4 py-8 dark:bg-background bg-[#F5F7F8]">
   <h1 className="mt-5 text-center font-bold underline text-4xl">Our Features to Transform Your Workflow</h1>
   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h3 className="text-xl font-semibold mb-4">Intuitive Project Management</h3>
-      <p className="text-gray-700">Seamlessly organize tasks, set deadlines, and track progress with our intuitive project management tools. Keep your team focused and projects on schedule.</p>
+    <div className="bg-white dark:bg-background dark:shadow shadow-md p-6 dark:border-2 rounded">
+      <h3 className="text-xl font-semibold dark:text-white mb-4">Intuitive Project Management</h3>
+      <p className="text-gray-700 dark:text-white">Seamlessly organize tasks, set deadlines, and track progress with our intuitive project management tools. Keep your team focused and projects on schedule.</p>
     </div>
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h3 className="text-xl font-semibold mb-4">Effortless Communication</h3>
-      <p className="text-gray-700">Say goodbye to endless email chains and scattered messaging platforms. Our integrated communication suite keeps all team discussions centralized and easily accessible, fostering collaboration like never before.</p>
+    <div className="bg-white dark:bg-background dark:shadow shadow-md p-6 dark:border-2 rounded">
+      <h3 className="text-xl font-semibold dark:text-white mb-4">Effortless Communication</h3>
+      <p className="text-gray-700 dark:text-white" >Say goodbye to endless email chains and scattered messaging platforms. Our integrated communication suite keeps all team discussions centralized and easily accessible, fostering collaboration like never before.</p>
     </div>
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h3 className="text-xl font-semibold mb-4">Data Insights at Your Fingertips</h3>
-      <p className="text-gray-700">From real-time performance metrics to comprehensive reports, gain valuable insights to drive your company forward.</p>
+    <div className="bg-white dark:bg-background dark:shadow shadow-md p-6 dark:border-2 rounded">
+      <h3 className="text-xl font-semibold dark:text-white mb-4">Data Insights at Your Fingertips</h3>
+      <p className="text-gray-700 dark:text-white">From real-time performance metrics to comprehensive reports, gain valuable insights to drive your company forward.</p>
     </div>
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h3 className="text-xl font-semibold mb-4">Customizable Workflows</h3>
-      <p className="text-gray-700">Tailor our platform to suit your company's unique needs. With customizable workflows, you can automate repetitive tasks and streamline processes, saving time and boosting productivity.</p>
+    <div className="bg-white dark:bg-background dark:shadow shadow-md p-6 dark:border-2 rounded">
+      <h3 className="text-xl font-semibold mb-4 dark:text-white">Customizable Workflows</h3>
+      <p className="text-gray-700 dark:text-white">Tailor our platform to suit your company's unique needs. With customizable workflows, you can automate repetitive tasks and streamline processes, saving time and boosting productivity.</p>
     </div>
-    <div className="bg-white rounded-lg shadow-md p-6">
-            <h3 className="text-xl font-semibold mb-4">Secure Document Management</h3>
-            <p>Protect your sensitive information with our state-of-the-art document management system. Share files securely, control access levels, and ensure compliance with industry regulations.</p>
+    <div className="bg-white dark:bg-background dark:shadow shadow-md p-6 dark:border-2 rounded">
+            <h3 className="text-xl font-semibold dark:text-white mb-4">Secure Document Management</h3>
+            <p className="text-gray-700 dark:text-white">Protect your sensitive information with our state-of-the-art document management system. Share files securely, control access levels, and ensure compliance with industry regulations.</p>
           </div>
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h3 className="text-xl font-semibold mb-4">Seamless Integration</h3>
-            <p className="text-gray-700"> Integrate with your favorite tools and services effortlessly. Whether it's CRM software, accounting platforms, or cloud storage solutions, our seamless integrations ensure smooth data flow across your entire ecosystem.</p>
+          <div className="bg-white dark:bg-background dark:shadow shadow-md p-6 dark:border-2 rounded">
+            <h3 className="text-xl font-semibold mb-4 dark:text-white">Seamless Integration</h3>
+            <p className="text-gray-700 dark:text-white"> Integrate with your favorite tools and services effortlessly. Whether it's CRM software, accounting platforms, or cloud storage solutions, our seamless integrations ensure smooth data flow across your entire ecosystem.</p>
           </div>
   </div>
 </div>
 
 
 {/* services */}
-<div className="container bg-transparent mb-5">
+<div className="container bg-transparent mb-5" id="service">
         <div>
           <h1 className="mt-5 text-center font-bold underline text-4xl">Services for Every Business Stage</h1>
         </div>
@@ -137,7 +137,7 @@ export default function Home() {
       </div>
 
       {/* how it works */}
-      <div className="container mx-auto px-4 py-8 bg-[#F5F7F8] rounded">
+      <div className="container mx-auto px-4 py-8 dark:bg-background bg-[#F5F7F8] rounded">
   <h2 className="mb-5 text-center font-bold underline text-4xl">How It Works</h2>
   
   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

@@ -2,15 +2,17 @@ import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import MaxWidthWrapper from "./maxWithWrapper";
 import { Button } from "./components/ui/button";
+import { ModeToggle } from "./components/ui/theme-toggle";
+import { Link } from "react-router-dom";
 
 export default function Header() {
     const [isOpen, setIsOpen] = useState(false);
 
     const links = [
         { name: "Home", link: "/" },
-        { name: "Service", link: "/" },
-        { name: "About", link: "/" },
-        { name: "Contact", link: "/" }
+        { name: "About", link: "#about" },
+        { name: "Service", link: "#service" },
+        { name: "Contact", link: "#contact" }
     ];
 
     return (
@@ -33,7 +35,20 @@ export default function Header() {
                                 <a href={item.link} className={`${isOpen ? "text-black" : "text-white" } hover:text-gray-600 font-medium `}>{item.name}</a>
                             </li>
                         ))}
-                         <Button className="bg-[#470A8A] rounded text-white">Get Started</Button>
+                        <div className="flex gap-2 items-center">
+                        <Button className="bg-transparent border-2 border-[#470A8A] hover:border-[3px] rounded text-white">
+                            <Link to="/sign-in">
+                                Sign in
+                            </Link>
+                            </Button>
+                        <Button className="bg-[#470A8A] rounded text-white">
+                            <Link to="/get-started">
+                                Get Started
+                            </Link>
+                            </Button>
+                        
+                         <ModeToggle />
+                        </div>
                     </ul>
                 </div>
                    

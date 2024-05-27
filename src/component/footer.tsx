@@ -3,7 +3,7 @@ import { X } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer className="bg-[#460887] py-8">
+    <footer className="bg-[#460887] dark:bg-background dark:border-y-2 py-8">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Navigation Links */}
@@ -34,7 +34,7 @@ const Footer = () => {
 
         {/* Copyright Information */}
         <div className="mt-8 text-center">
-          <p className="text-gray-300">&copy; {new Date().getFullYear()} Your Company. All rights reserved.</p>
+          <p className="text-gray-300">&copy; {new Date().getFullYear()} BUMS. All rights reserved.</p>
         </div>
       </div>
     </footer>

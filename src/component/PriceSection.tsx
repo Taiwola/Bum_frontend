@@ -1,13 +1,22 @@
+// import { cn } from "@/lib/utils";
 import { Button } from "./components/ui/button";
+// import {
+//   Card,
+//   CardContent,
+//   CardDescription,
+//   CardFooter,
+//   CardHeader,
+//   CardTitle,
+// } from "@/component/components/ui/card"
 
 
 const PricingSection = () => {
   return (
-    <div className="container bg-[#F5F7F8] mx-auto px-4 py-8">
+    <div className="container bg-[#F5F7F8] dark:bg-background mx-auto px-4 py-8">
       <h2 className="mb-5 text-center font-bold underline text-4xl">Pricing Plans</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Pricing Card 1 */}
-        <div className="bg-white shadow-lg rounded-lg p-6">
+        <div className="bg-white shadow-lg dark:bg-background dark:shadow-gray-800 dark:border-2 rounded-lg p-6">
           <h3 className="text-xl font-semibold mb-4">Basic</h3>
           <ul className="text-gray-600">
             <li>Feature 1</li>
@@ -23,7 +32,7 @@ const PricingSection = () => {
         </div>
 
         {/* Pricing Card 2 */}
-        <div className="bg-white shadow-lg rounded-lg p-6">
+        <div className="bg-white shadow-lg rounded-lg p-6 dark:bg-background dark:shadow-gray-800 dark:border-2">
           <h3 className="text-xl font-semibold mb-4">Pro</h3>
           <ul className="text-gray-600">
             <li>Feature 1</li>
@@ -39,7 +48,7 @@ const PricingSection = () => {
         </div>
 
         {/* Pricing Card 3 - Recommended */}
-        <div className="bg-white shadow-lg rounded-lg p-6 border-2 border-[#CA46E8]">
+        <div className="bg-white shadow-lg rounded-lg p-6 border-2 dark:bg-background dark:shadow-gray-800 dark:border-2 border-[#CA46E8]">
           <h3 className="text-xl font-semibold mb-4">Premium</h3>
           <ul className="text-gray-600">
             <li>Feature 1</li>
@@ -57,5 +66,48 @@ const PricingSection = () => {
     </div>
   );
 };
+
+// const PricingSection = () => {
+//   return (
+//     <div className="flex justify-center items-center gap-3 mt-4">
+//       <Card className={cn('w-[300px] h-[400px] rounded shadow')}>
+//   <CardHeader>
+//     <CardTitle>Card Title</CardTitle>
+//     <CardDescription>Card Description</CardDescription>
+//   </CardHeader>
+//   <CardContent>
+//     <p>Card Content</p>
+//   </CardContent>
+//   <CardFooter>
+//     <p>Card Footer</p>
+//   </CardFooter>
+// </Card>
+// <Card className={cn('w-[300px] h-[400px] rounded shadow')}>
+//   <CardHeader>
+//     <CardTitle>Card Title</CardTitle>
+//     <CardDescription>Card Description</CardDescription>
+//   </CardHeader>
+//   <CardContent>
+//     <p>Card Content</p>
+//   </CardContent>
+//   <CardFooter>
+//     <p>Card Footer</p>
+//   </CardFooter>
+// </Card>
+// <Card className={cn('w-[300px] h-[400px] rounded shadow')}>
+//   <CardHeader>
+//     <CardTitle>Card Title</CardTitle>
+//     <CardDescription>Card Description</CardDescription>
+//   </CardHeader>
+//   <CardContent>
+//     <p>Card Content</p>
+//   </CardContent>
+//   <CardFooter>
+//     <p>Card Footer</p>
+//   </CardFooter>
+// </Card>
+//     </div>
+//   )
+// }
 
 export default PricingSection;

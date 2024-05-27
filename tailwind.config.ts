@@ -1,3 +1,4 @@
+import {withUt} from "uploadthing/tw";
 const defaultTheme = require("tailwindcss/defaultTheme");
 
 const colors = require("tailwindcss/colors");
@@ -6,7 +7,7 @@ const {
 } = require("tailwindcss/lib/util/flattenColorPalette");
 
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+module.exports = withUt({
   darkMode: ["class"],
   content: [
     './pages/**/*.{ts,tsx}',
@@ -126,7 +127,7 @@ module.exports = {
     },
   },
   plugins: [require("tailwindcss-animate"), addVariablesForColors],
-}
+})
 
 function addVariablesForColors({ addBase, theme }) {
   let allColors = flattenColorPalette(theme("colors"));
