@@ -32,17 +32,17 @@ export default function Header() {
                         </div>) : ""}
                         {links.map((item, index) => (
                             <li key={index}>
-                                <a href={item.link} className={`${isOpen ? "text-black" : "text-white" } hover:text-gray-600 font-medium `}>{item.name}</a>
+                                <a href={item.link} className={`${isOpen ? "text-black" : "text-white" } hover:text-gray-600 font-medium transition-all duration-500 `}>{item.name}</a>
                             </li>
                         ))}
                         <div className="flex gap-2 items-center">
-                        <Button className="bg-transparent border-2 border-[#470A8A] hover:border-[3px] rounded text-white">
-                            <Link to="/sign-in">
+                        <Button className={`bg-transparent border-2 border-[#470A8A] hover:border-[3px] rounded transition-all duration-500  ${isOpen ? "text-black" : "text-white"} `}>
+                            <Link to="/sign-in" className="hover:text-gray-600">
                                 Sign in
                             </Link>
                             </Button>
-                        <Button className="bg-[#470A8A] rounded text-white">
-                            <Link to="/get-started">
+                        <Button className={`bg-[#470A8A] transition-all duration-500 rounded ${isOpen ? "text-black" : "text-white"}`}>
+                            <Link to="/register" className="hover:text-gray-600">
                                 Get Started
                             </Link>
                             </Button>

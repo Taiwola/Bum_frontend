@@ -3,3 +3,5 @@ const Sign_in = () => {
         <p>sign in</p>
     )
 }
+
+export default Sign_in;
