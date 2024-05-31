@@ -4,9 +4,11 @@ import MaxWidthWrapper from "./maxWithWrapper";
 import { Button } from "./components/ui/button";
 import { ModeToggle } from "./components/ui/theme-toggle";
 import { Link } from "react-router-dom";
+import { userLoggedIn } from "@/lib/verifyUser";
 
 export default function Header() {
     const [isOpen, setIsOpen] = useState(false);
+    const user = userLoggedIn();
 
     const links = [
         { name: "Home", link: "/" },
@@ -36,16 +38,22 @@ export default function Header() {
                             </li>
                         ))}
                         <div className="flex gap-2 items-center">
-                        <Button className={`bg-transparent border-2 border-[#470A8A] hover:border-[3px] rounded transition-all duration-500  ${isOpen ? "text-black" : "text-white"} `}>
+                        {user.data ? <div className="hidden"></div>: (<Button className={`bg-transparent border-2 border-[#470A8A] hover:border-[3px] rounded transition-all duration-500  ${isOpen ? "text-black" : "text-white"} `}>
                             <Link to="/sign-in" className="hover:text-gray-600">
                                 Sign in
                             </Link>
-                            </Button>
-                        <Button className={`bg-[#470A8A] transition-all duration-500 rounded ${isOpen ? "text-black" : "text-white"}`}>
+                            </Button>)}
+                        {user.data ?
+                            (<Button className={`bg-[#470A8A] transition-all duration-500 rounded ${isOpen ? "text-black" : "text-white"}`}>
+                            <Link to="/agency" className="hover:text-gray-600">
+                                Dashboard
+                            </Link>
+                            </Button>)
+                        : (<Button className={`bg-[#470A8A] transition-all duration-500 rounded ${isOpen ? "text-black" : "text-white"}`}>
                             <Link to="/register" className="hover:text-gray-600">
                                 Get Started
                             </Link>
-                            </Button>
+                            </Button>)}
                         
                          <ModeToggle />
                         </div>

@@ -39,7 +39,7 @@ export function SignInForm() {
               className: "border text-black font-medium dark:bg-black dark:text-white"
             });
             reset();
-            navigate('/dashboard');
+            navigate('/agency');
           },
           onError: async (error: Error) => {
             toast({

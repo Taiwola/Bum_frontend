@@ -23,7 +23,7 @@ export  const loginRoute = async ({email, password}: TFormLoginSchema) => {
         throw new Error(data.message);
     }
 
-    const token = data.token;
+    const token = data.accessToken;
     sessionStorage.setItem("token", token);
     return "login success!";
 }
@@ -50,4 +50,20 @@ export const registerRoute = async ({email, password, name}: TFormSchema) => {
         throw new Error(data.message);
     }
     return data.message;
+}
+
+export const verifyUser = async () => {
+    const token = sessionStorage.getItem("token")
+    const res = await fetch(`${API_BASE_URL}/api/auth/verify`, {
+        method: 'GET',
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+
+        }
+    });
+    const response = await res.json();
+    if (!res.ok) return null;
+
+    return response.data;
 }

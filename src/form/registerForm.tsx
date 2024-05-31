@@ -54,6 +54,10 @@ export function RegisterForm() {
   });
 
   const onSubmit = (data: TFormSchema) => {
+    if (data.password !== data.confirm_password) return toast({
+      description: "password do not match",
+      className: "border bg-white z-[1000px] text-black font-medium dark:bg-black dark:text-white"
+    });
     onMutation.mutate(data);
   };
   return (
