@@ -102,7 +102,7 @@ export function RegisterForm() {
           <Input
             id="confirmpassword"
             placeholder="••••••••"
-            type="confirmpassword"
+            type="password"
             {...register("confirm_password")}
           />
           {errors?.confirm_password ? (

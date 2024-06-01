@@ -1,5 +1,7 @@
+import AgencyDetails from "@/form/agencyDetails";
 import { getAuthUserDetails } from "@/lib/queries";
 import { userLoggedIn } from "@/lib/verifyUser"
+import { RoleEnum } from "@/types/types";
 import { Navigate } from "react-router-dom";
 
 
@@ -10,6 +12,7 @@ export default function Agency() {
     if (isLoading) {
         return <div>Loading...</div>;
     }
+    
 
     if (isError || !user) {
         return <Navigate to="/sign-in" replace={true} />;
@@ -17,13 +20,21 @@ export default function Agency() {
 
     const data = getAuthUserDetails();
 
-    if (data.user?.agency === null) {
-        return <>no agency</>
+   
+    if (data.user?.agencyId) {
+        if (data.user?.role === RoleEnum.SUBACCOUNT_USER || data.user?.role === RoleEnum.SUBACCOUNT_GUEST) {
+            return <Navigate to="/agency/subaccount" replace={true} />;
+        } else if (data.user?.role === RoleEnum.AGENCY_OWNER || data.user?.role === RoleEnum.AGENCY_ADMIN) {
+            return <Navigate to="/agency/dashboard" replace={true} />;
+        }
     }
 
     return (
-        <div>
-           agency
+        <div className="flex justify-center items-center mt-4">
+            <div className="max-w-[850px] border-[1px] p-4 rounded-xl">
+                <h1 className="text-4xl">Create An Agency</h1>
+                <AgencyDetails data={{companyEmail: data.user?.email}} />
+            </div>
         </div>
     );
 }

@@ -19,6 +19,4 @@ export default function ProtectedRoute() {
   if (data != null) {
     return <Outlet />
   }
-
-  return <Navigate to="/" replace />;
 }
