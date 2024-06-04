@@ -5,6 +5,7 @@ import './index.css'
 import { ThemeProvider } from './providers/theme-provider.jsx'
 import {Toaster} from "@/component/components/ui/toaster.tsx"
 import { QueryClient, QueryClientProvider } from 'react-query'
+import ModelProvider from './providers/model-provider-file.tsx'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -18,7 +19,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
      <QueryClientProvider client={queryClient}>
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-    <App />
+      <ModelProvider>
+        <App />
+      </ModelProvider>
     <Toaster />
     </ThemeProvider>
      </QueryClientProvider>

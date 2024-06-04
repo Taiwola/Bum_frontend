@@ -25,7 +25,7 @@ export default function Agency() {
         if (data.user?.role === RoleEnum.SUBACCOUNT_USER || data.user?.role === RoleEnum.SUBACCOUNT_GUEST) {
             return <Navigate to="/agency/subaccount" replace={true} />;
         } else if (data.user?.role === RoleEnum.AGENCY_OWNER || data.user?.role === RoleEnum.AGENCY_ADMIN) {
-            return <Navigate to="/agency/dashboard" replace={true} />;
+            return <Navigate to={`/agency/${data.user.agencyId}`} replace={true} />;
         }
     }
 

@@ -1,3 +1,4 @@
+import { create_agency } from "@/api/agency/route";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/component/components/ui/alert-dialog";
 import { Button } from "@/component/components/ui/button";
 import { Card, CardContent, CardDescription, CardTitle } from "@/component/components/ui/card";
@@ -12,6 +13,7 @@ import { AgencyType } from "@/types/types"
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
@@ -20,22 +22,27 @@ type Props = {
 }
 
 const formSchema = z.object({
-    name: z.string().min(2, {message: 'Agency name must be more than 2 characters'}),
+    name: z.string().min(2, {message: 'Select an image or refresh the page'}),
     companyEmail: z.string().min(1),
     companyPhone: z.string().min(1),
     address: z.string().min(1),
     city: z.string().min(1),
     state: z.string().min(1),
     country: z.string().min(1),
-    zipCode: z.string().optional(),
+    zipCode: z.string().min(1),
     whiteLabel: z.boolean(),
     agencyLogo: z.string().min(1),
-})
+});
+
+export type agencyTypeSchema = z.infer<typeof formSchema>;
 
 export default function AgencyDetails({data}: Props) {
     const {toast} = useToast();
     const navigate = useNavigate();
     const [deletingAgency, setDeletingAgency] = useState(false);
+    const [agencyLogoS, setAgencyLogoS] = useState<string>(() =>
+        sessionStorage.getItem("agencyLogo") || ""
+      );
     const {handleSubmit, reset, register, formState: {isLoading, errors}, setValue, watch} = useForm<z.infer<typeof formSchema>>({
         mode: "onChange",
         resolver: zodResolver(formSchema),
@@ -53,7 +60,25 @@ export default function AgencyDetails({data}: Props) {
         }
     });
 
-    const agencyLogoS = sessionStorage.getItem("agencyLogo") || "";
+    const onMutation = useMutation(create_agency, {
+        onSuccess:  async (message: string) => {
+          toast({
+            title: "Agency uploaded",
+            description: message,
+            variant: "default",
+            className: "border text-black font-medium dark:bg-black dark:text-white"
+          });
+          reset();
+          navigate(`/agency/${data.id}`);
+        },
+        onError: async (message:string) => {
+          toast({
+            title: "Error",
+            description: message,
+            variant: "destructive",
+          })
+        }
+    });
 
     useEffect(() => {
         if (data) {
@@ -66,16 +91,15 @@ export default function AgencyDetails({data}: Props) {
         setValue("whiteLabel", Boolean(data?.whiteLabel ?? false));
     }, [data, setValue]);
 
-    const submit = (formData: z.infer<typeof formSchema>) => {
+    const submit = (formData: agencyTypeSchema) => {
         console.log(formData);
+        onMutation.mutate(formData);
         toast({
             title: 'Updating agency details',
             description: 'Please wait while we update your agency details',
         })
     }
 
-      const whiteLabel = watch("whiteLabel");
-      console.log(whiteLabel);
 
       const handleDeleteAgency = async () => {
         if (!data?.id) return
@@ -102,8 +126,8 @@ export default function AgencyDetails({data}: Props) {
   return (
         <AlertDialog>
             <Card className="mt-3">
-                <CardTitle>
-                    <p>Card</p>
+                <CardTitle className="text-center py-3">
+                    <p>Agency Information</p>
                 </CardTitle>
                 <CardDescription className="p-3">
                 Welcome to our Agency Creation Page. Here, you're empowered to establish your agency swiftly and effectively. Customize your agency's profile with essential details, from name to logo. Gain access to powerful tools for client and project management, setting the stage for your agency's success.
@@ -111,7 +135,7 @@ export default function AgencyDetails({data}: Props) {
                 <CardContent>
                     <Fileuploader agencyId={data.id}/>
                 <form onSubmit={handleSubmit(submit)} className="space-y-4">
-                    <Input type="text" value={agencyLogoS as string}  {...register("agencyLogo")} />
+                    <Input type="text" value={agencyLogoS as string}  {...register("agencyLogo")} className="hidden"/>
                     {errors.agencyLogo ? (
                                 <span className="text-sm text-red-500 text-muted-foregrounduted">{errors?.agencyLogo.message}</span>
                             ) : ""}
@@ -218,7 +242,7 @@ export default function AgencyDetails({data}: Props) {
                   /> */}
                 </div>
               )}
-              <Button
+               <Button
                 type="submit"
                 disabled={isLoading}
                 className="bg-[#CA46E8] py-3 hover:bg-slate-200 hover:text-black"

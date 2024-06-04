@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UploadCloudIcon } from "lucide-react";
 import { Input } from "@/component/components/ui/input";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "react-query";
+import { uploadLogo } from "@/api/uploadthing/route";
+import { useToast } from "@/component/components/ui/use-toast";
+import { ToastAction } from "@/component/components/ui/toast";
 
 type Props = {
   agencyId: string | undefined;
@@ -24,14 +28,37 @@ const uploadSchema = z.object({
 });
 
 export default function Fileuploader({ agencyId }: Props) {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-  const { register, handleSubmit, formState: { errors }, watch, setValue } = useForm<z.infer<typeof uploadSchema>>({
+  const { register, handleSubmit, formState: { errors }, watch } = useForm<z.infer<typeof uploadSchema>>({
     resolver: zodResolver(uploadSchema),
+  });
+
+  const {toast} = useToast();
+
+  const onMutation = useMutation(uploadLogo, {
+    onSuccess: async (url: string) => {
+        toast({
+          variant: "default",
+          title: "Upload Success",
+          description: "File uploaded successfully",
+          className: "border text-black font-medium dark:bg-black dark:text-white"
+        });
+        sessionStorage.setItem("agencyLogo", url);
+      },
+      onError: async (error: Error) => {
+        toast({
+          variant: "default",
+          title: "Error",
+          description: error.message,
+          className: "bg-red-400 text-white font-medium",
+          action: <ToastAction altText="Try again" className="hover:bg-red-400">Try again</ToastAction>
+        });
+    }
   });
 
   const submit = (data: z.infer<typeof uploadSchema>) => {
     const file = data.agencyLogo[0]
+    onMutation.mutate(data.agencyLogo[0]);
 
     if (file) {
       const reader = new FileReader();
@@ -42,9 +69,7 @@ export default function Fileuploader({ agencyId }: Props) {
     } else {
       setPreview(null);
     }
-    console.log("uploaded");
-    console.log(data);
-    sessionStorage.setItem("agencyLogo", file.name);
+    
   };
 
   // const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
