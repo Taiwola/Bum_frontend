@@ -1,6 +1,9 @@
 import Sidebar from '@/component/sidebar';
-import { getAuthUserDetails } from '@/lib/queries'
-import { RoleEnum } from '@/types/types';
+import BlurPage from '@/global/blur-page';
+import InfoBar from '@/global/info-bar';
+import { getAgencydetails, getAuthUserDetails } from '@/lib/queries'
+import { ThemeProvider } from '@/providers/theme-provider';
+import { Notification, RoleEnum } from '@/types/types';
 import React from 'react'
 import { Navigate } from 'react-router-dom';
 
@@ -24,15 +27,31 @@ export default function LayoutDash({children, params}: Props) {
         return <Navigate to="/unauthorized" replace={true} />;
     }
 
-    let allNoti: any = [];
-    // todo
-    //const notification =  // write the backend code to get all notification
+    let allNoti: Notification[] = [];
+    
+    const agency = getAgencydetails(data.user?.agencyId as string);
+        const notifications = agency?.notifications;
+    
+        if (notifications) {
+          allNoti = notifications;
+        }
+        
   return (
+    <ThemeProvider
+     defaultTheme="dark" 
+     storageKey="vite-ui-theme"
+     >
     <div className='h-screen overflow-hidden'>
         <Sidebar id={params.agencyId} type='agency' />
         <div className='md:pl-[300px]'>
-            {children}
+            <InfoBar notification={allNoti} />
+            <div className='relative'>
+                <BlurPage>
+                    {children}
+                </BlurPage>
+            </div>
         </div>
     </div>
+    </ThemeProvider>
   )
 }

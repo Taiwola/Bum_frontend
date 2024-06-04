@@ -1,4 +1,4 @@
-import { getAuthUserDetails } from "@/lib/queries"
+import { getAgencydetails, getAuthUserDetails } from "@/lib/queries"
 import defaultimage from "@/assets/react.svg";
 import MenuOptions from "./menu-options";
 
@@ -9,8 +9,8 @@ type Props = {
 }
 
 export default function Sidebar({id, type}: Props) {
-
     const data = getAuthUserDetails();
+    const agencyData = getAgencydetails(data.user?.agencyId as string);
 
     if (!data.user?.id) return null;
 
@@ -33,8 +33,8 @@ export default function Sidebar({id, type}: Props) {
         }
     }
 
-    const sideBarOptions = type === 'agency' ? data.user?.agency.sidebarOptions || [] : data.user?.agency.subAccounts.find((sub) => sub.id === 'id')?.sidebarOptions || []
-
+    const sideBarOptions = type === 'agency' ? agencyData?.sidebarOptions || [] : data.user?.agency.subAccounts.find((sub) => sub.id === 'id')?.sidebarOptions || [];
+   
     const subAccounts = data.user?.agency?.subAccounts?.filter((subaccount) =>
         data.user.permissions.find(permission =>
             permission.subAccountId === subaccount.id && permission.access
@@ -44,7 +44,7 @@ export default function Sidebar({id, type}: Props) {
 
   return (
     <>
-        {/* <MenuOptions
+        <MenuOptions
     defaultOpen={true}
     details={details}
     id={id}
@@ -52,7 +52,7 @@ export default function Sidebar({id, type}: Props) {
     sideBarOpts={sideBarOptions}
     user={data.user}
     subAccounts={subAccounts}
-    /> */}
+    />
     <MenuOptions
     details={details}
     id={id}

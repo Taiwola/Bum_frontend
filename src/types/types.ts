@@ -310,6 +310,7 @@ export type AgencyType = {
     id: string;
     name: string;
     icon: Icon;
+    link: string;
     createdAt: Date;
     updatedAt: Date;
     subAccount: SubAccountType;
@@ -376,3 +377,8 @@ export type AgencyType = {
     agencyId: string;
   }
   
+
+  export type IconImageType = {
+    name: string;
+    path: string;
+  };

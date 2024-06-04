@@ -1,4 +1,4 @@
-import { AgencySidebarOption, RoleEnum, SubAccountSidebarOption, SubAccountType } from "@/types/types"
+import { AgencySidebarOption, AgencyType, RoleEnum, SubAccountSidebarOption, SubAccountType } from "@/types/types"
 import { useEffect, useMemo, useState } from "react"
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "./components/ui/sheet"
 import { Button } from "./components/ui/button"
@@ -8,6 +8,11 @@ import { AspectRatio } from "./components/ui/aspect-ratio"
 import { Popover, PopoverContent, PopoverTrigger } from "./components/ui/popover"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "./components/ui/command"
 import { Link } from "react-router-dom"
+import { useModal } from "@/providers/model-provider-file"
+import CustomModel from "@/global/custom-model"
+import SubAccountDetails from "@/form/subaccountDetails"
+import { Separator } from "./components/ui/separator"
+import IconImages from "./icons/index";
 
 
 type Props = {
@@ -24,9 +29,7 @@ export default function MenuOptions({defaultOpen, subAccounts, sideBarOpts,sideB
 
   const [isMounted, setIsMounted] = useState(false)
   const openMenu = useMemo(() => (defaultOpen ? {open: true} : {}), [defaultOpen]);
-    
-  // console.log(user);
-  // console.log(subAccounts);
+  const {setOpen} = useModal();
 
   useEffect(() => {
     setIsMounted(true)
@@ -52,13 +55,13 @@ export default function MenuOptions({defaultOpen, subAccounts, sideBarOpts,sideB
       <SheetContent
        ShowX={!defaultOpen} 
        side={"left"}
-       className={clsx("bg-background/80 backdrop-blur-xl fixed top-0 border-r-[1px] p-6", {
+       className={clsx("bg-background/80 backdrop-blur-xl overflow-y-scroll scroll-m-4 fixed top-0 border-r-[1px] p-6", {
         'hidden md:inline-block z-0 w-[300px]' : defaultOpen,
         'inline-block md:hidden z-[100] w-full' : !defaultOpen
        })}
        >
         <div>
-          <AspectRatio ratio={16/7}>
+          <AspectRatio ratio={16/7} className="mt-4">
               <img 
               src={sideBarLogo} 
               alt={"side bar logo"}
@@ -69,7 +72,7 @@ export default function MenuOptions({defaultOpen, subAccounts, sideBarOpts,sideB
             <PopoverTrigger asChild>
                <Button
                variant={"ghost"}
-               className="w-full my-4 flex items-center justify-between py-8"
+               className="w-full  my-4 flex items-center justify-between py-8"
                >
                 <div className="flex items-center text-left gap-2">
                   <Compass />
@@ -89,7 +92,7 @@ export default function MenuOptions({defaultOpen, subAccounts, sideBarOpts,sideB
             >
               <Command className="rounded-lg">
                 <CommandInput placeholder="Search Account...." />
-                <CommandList className="pb-16 overflow-hidden">
+                <CommandList className="pb-16 ">
                     <CommandEmpty>
                       No result found
                     </CommandEmpty>
@@ -97,7 +100,7 @@ export default function MenuOptions({defaultOpen, subAccounts, sideBarOpts,sideB
                       (user.role === RoleEnum.AGENCY_OWNER || user.role === RoleEnum.AGENCY_ADMIN) && user?.agency && <CommandGroup heading="Agency">
                         <CommandItem className="!bg-transparent my-2 text-primary border-[1px] border-border p-2 rounded-md hover:!bg-muted cursor-pointer transition-all">
                         {defaultOpen ? 
-                        (<Link to={`agency/${user?.agency?.id}`} className="flex gap-4 w-full h-full">
+                        (<Link to={`/agency/${user?.agency?.id}`} className="flex gap-4 w-full h-full">
                           <div className="relative w-16">
                             <img src={user?.agency?.agencyLogo} alt="agency logo" className="rounded-md object-contain" />
                           </div>
@@ -165,14 +168,54 @@ export default function MenuOptions({defaultOpen, subAccounts, sideBarOpts,sideB
                     </CommandGroup>
                 </CommandList>
                 {(user.role === RoleEnum.AGENCY_OWNER || user.role === RoleEnum.AGENCY_ADMIN) && (
-                  <Button variant={"default"} className="w-full flex gap-2 bg-muted-foreground">
+                  <SheetClose>
+                        <Button
+                    variant={"default"}
+                    className="w-full flex gap-2 text-white font-bold hover:text-black hover:bg-muted-foreground bg-bodyTheme-default"
+                    onClick={() => setOpen(
+
+                      <CustomModel
+                      title="Create sub Account"
+                      subheading="You can switch between agency and sub accounts from the sidebar"
+                      >
+                        {<SubAccountDetails
+                          agencyDetails={user?.agency as AgencyType}
+                          userId={user.id as string}
+                          userName={user.name as string}
+                          details={details}
+                        />}
+                      </CustomModel>
+                    
+                    )}
+                    >
                     <PlusCircleIcon size={15}/>
                     Create Sub Account
                   </Button>
+                  </SheetClose>
                 )}
               </Command>
             </PopoverContent>
           </Popover>
+          <p className="text-muted-foreground text-xs mb-2">MENU LINKS</p>
+<Separator className="mb-4" />
+<nav className="relative">
+  <Command className="rounded-lg overflow-visible bg-transparent">
+    <CommandInput placeholder="Search..." />
+    <CommandList className="py-4 overflow-visible">
+      <CommandEmpty>No Results Found</CommandEmpty>
+      <CommandGroup className="overflow-visible">
+        {sideBarOpts.map((sidebar) => (
+          <CommandItem key={sidebar.id} className="md:w-[320px] w-full">
+            <Link to={sidebar.link} className="flex items-center gap-2 hover:bg-transparent rounded-md transition-all md:w-full w-[320px]">
+              <IconImages icon={sidebar.icon} />
+              <span>{sidebar.name}</span>
+            </Link>
+          </CommandItem>
+        ))}
+      </CommandGroup>
+    </CommandList>
+  </Command>
+</nav>
 
         </div>
       </SheetContent>

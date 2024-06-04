@@ -11,6 +11,8 @@ import { ToastAction } from "@/component/components/ui/toast";
 
 type Props = {
   agencyId: string | undefined;
+  logo: "subaccountLogo" | "agencyLogo";
+  name: string
 };
 
 const uploadSchema = z.object({
@@ -27,7 +29,8 @@ const uploadSchema = z.object({
     }),
 });
 
-export default function Fileuploader({ agencyId }: Props) {
+export default function Fileuploader({ agencyId, logo, name }: Props) {
+
   const [preview, setPreview] = useState<string | null>(null);
   const { register, handleSubmit, formState: { errors }, watch } = useForm<z.infer<typeof uploadSchema>>({
     resolver: zodResolver(uploadSchema),
@@ -43,7 +46,7 @@ export default function Fileuploader({ agencyId }: Props) {
           description: "File uploaded successfully",
           className: "border text-black font-medium dark:bg-black dark:text-white"
         });
-        sessionStorage.setItem("agencyLogo", url);
+        sessionStorage.setItem(logo, url);
       },
       onError: async (error: Error) => {
         toast({
@@ -91,7 +94,7 @@ export default function Fileuploader({ agencyId }: Props) {
   return (
     <div>
       <div className="mb-2">
-        <h1>Agency Logo</h1>
+        <h1>{name} Logo</h1>
         {preview && (
           <div className="mt-2 flex justify-center items-center">
             <img src={preview} alt="Selected file preview" className="max-w-xs max-h-56" />

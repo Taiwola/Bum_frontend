@@ -133,7 +133,7 @@ export default function AgencyDetails({data}: Props) {
                 Welcome to our Agency Creation Page. Here, you're empowered to establish your agency swiftly and effectively. Customize your agency's profile with essential details, from name to logo. Gain access to powerful tools for client and project management, setting the stage for your agency's success.
                 </CardDescription>
                 <CardContent>
-                    <Fileuploader agencyId={data.id}/>
+                    <Fileuploader name="Agency" logo="agencyLogo" agencyId={data.id}/>
                 <form onSubmit={handleSubmit(submit)} className="space-y-4">
                     <Input type="text" value={agencyLogoS as string}  {...register("agencyLogo")} className="hidden"/>
                     {errors.agencyLogo ? (
