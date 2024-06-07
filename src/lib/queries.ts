@@ -1,6 +1,6 @@
 import { get_agency } from "@/api/agency/route";
 import { verifyUser } from "@/api/auth/route";
-import { AgencyType, UserType } from "@/types/types";
+import { AgencyType, PermissionsType, UserType } from "@/types/types";
 import { useQuery } from "react-query";
 
 export const getAuthUserDetails = () => {
@@ -31,4 +31,16 @@ export const getAgencydetails = (agencyId: string):  AgencyType | null  => {
     const agency: AgencyType = data;
 
     return agency;
+}
+
+
+export const getUserPermission = (userId: string) => {
+    console.log(userId);
+return null;
+}
+
+export const changeUserPermission = async (permissionId: string, userEmail: string, subAccountId: string, value:boolean, type: string) => {
+    if (type === 'agency') {
+        return "true"
+    }
 }

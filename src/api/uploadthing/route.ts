@@ -2,6 +2,7 @@ const API_BASE_URL = "http://localhost:4000";
 // const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const uploadLogo = async (file: File) => {
+    const token = sessionStorage.getItem("token");
      // Log the file object to verify its contents
      console.log("File:", file);
 
@@ -10,18 +11,16 @@ export const uploadLogo = async (file: File) => {
      
      // Append the file to the FormData object
      formData.append("file", file);
- 
-     // Log the FormData object to verify the file was appended
-     console.log("FormData:", formData);
 
-     // Log the entries of the FormData object to verify the file was appended
-     console.log("FormData Entries:", Array.from(formData.entries()));
 
 
     try {
         // Send a POST request to the upload endpoint with the FormData
         const res = await fetch(`${API_BASE_URL}/api/upload`, {
             method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
             body: formData, // Pass the FormData as the request body
         });
 

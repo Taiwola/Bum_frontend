@@ -8,6 +8,11 @@ import Dashboard from "./pages/dashboard";
 import Unauthorized from "./component/unauthorized";
 import LayoutDash from "./layout/layout";
 import { getAuthUserDetails } from "./lib/queries";
+import Team from "./pages/team";
+import AllSubaccount from "./pages/allSubaccount";
+import Billing from "./pages/billing";
+import Settings from "./pages/settings";
+import Launchpad from "./pages/launchpad";
 
 function App() {
   const data = getAuthUserDetails();
@@ -32,6 +37,51 @@ function App() {
             </LayoutDash>
         }
           />
+
+<Route
+          path="/agency/:Id/team"
+          element={
+            <LayoutDash params={{agencyId: data.user?.agencyId || ""}}>
+              <Team />
+            </LayoutDash>
+        }
+          />
+
+<Route
+          path="/agency/:Id/all-subaccounts"
+          element={
+            <LayoutDash params={{agencyId: data.user?.agencyId || ""}}>
+              <AllSubaccount />
+            </LayoutDash>
+        }
+          />
+
+<Route
+          path="/agency/:Id/billing"
+          element={
+            <LayoutDash params={{agencyId: data.user?.agencyId || ""}}>
+              <Billing />
+            </LayoutDash>
+        }
+          />
+<Route
+          path="/agency/:Id/launchpad"
+          element={
+            <LayoutDash params={{agencyId: data.user?.agencyId || ""}}>
+              <Launchpad />
+            </LayoutDash>
+        }
+          />
+
+<Route
+          path="/agency/:Id/settings"
+          element={
+            <LayoutDash params={{agencyId: data.user?.agencyId || ""}}>
+              <Settings />
+            </LayoutDash>
+        }
+          />
+          
         </Route>
     </Routes>
     </BrowserRouter>

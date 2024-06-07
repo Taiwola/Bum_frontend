@@ -8,6 +8,6 @@ export default function Dashboard({}: Props) {
   const Id = params.Id;
   const data = getAuthUserDetails();
   return (
-    <div>{Id}</div>
+    <div>dashboard</div>
   )
 }

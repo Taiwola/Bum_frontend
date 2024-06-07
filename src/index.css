@@ -66,13 +66,17 @@ html, body {
   }
 }
 
+.MYfont {
+  font-family: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+}
+
 @layer base {
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
-    @apply font-[Montserrat];
+    @apply MYfont;
     ::-webkit-scrollbar {
       width: 10px;
     }

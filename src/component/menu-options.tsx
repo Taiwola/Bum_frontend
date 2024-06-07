@@ -88,7 +88,7 @@ export default function MenuOptions({defaultOpen, subAccounts, sideBarOpts,sideB
                </Button>
             </PopoverTrigger>
             <PopoverContent
-            className="w-80 h-80 mt-4 z-[100]"
+            className="w-80 h-80 mt-4 z-[100] bg-bodyTheme-default dark:bg-background"
             >
               <Command className="rounded-lg">
                 <CommandInput placeholder="Search Account...." />

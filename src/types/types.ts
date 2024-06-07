@@ -88,7 +88,7 @@ export type AgencyType = {
     agencyId: string;
     agency: AgencyType;
     sidebarOptions: SubAccountSidebarOption[];
-    permissions: Permissions[];
+    permissions: PermissionsType[];
     funnels: Funnel[];
     media: Media[];
     contacts: Contact[];
@@ -382,3 +382,12 @@ export type AgencyType = {
     name: string;
     path: string;
   };
+
+  export type UserWithPermissionAndSubccount = {
+    userId: string,
+    subaccountId: string
+  }
+
+  export type AuthUserWithAgencySideBarOptionSubAccount = {
+    user: UserType
+  }

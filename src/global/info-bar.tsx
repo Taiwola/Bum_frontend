@@ -2,10 +2,11 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/component/components/ui/a
 import { Card } from '@/component/components/ui/card'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/component/components/ui/sheet'
 import { Switch } from '@/component/components/ui/switch'
+import { ModeToggle } from '@/component/components/ui/theme-toggle'
 import { getAuthUserDetails } from '@/lib/queries'
 import { Notification, RoleEnum } from '@/types/types'
 import { Bell } from 'lucide-react'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { twMerge } from 'tailwind-merge'
 
 type Props = {
@@ -47,7 +48,7 @@ export default function InfoBar({notification, className, role, subAccountId}: P
 
                 <Sheet>
                     <SheetTrigger>
-                        <div className='rounded-full w-8 h-8 bg-bodyTheme-default flex items-center justify-center text-white'>
+                        <div className='rounded-full w-9 h-9 bg-bodyTheme-default flex items-center justify-center text-white'>
                             <Bell size={17}/>
                         </div>
                     </SheetTrigger>
@@ -93,6 +94,8 @@ export default function InfoBar({notification, className, role, subAccountId}: P
                     </SheetContent>
                 </Sheet>
             </div>
+
+            <ModeToggle />
 
         </div>
     </>

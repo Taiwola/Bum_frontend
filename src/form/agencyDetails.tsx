@@ -32,6 +32,7 @@ const formSchema = z.object({
     zipCode: z.string().min(1),
     whiteLabel: z.boolean(),
     agencyLogo: z.string().min(1),
+    goal: z.number()
 });
 
 export type agencyTypeSchema = z.infer<typeof formSchema>;
@@ -219,11 +220,11 @@ export default function AgencyDetails({data}: Props) {
                         </div>
                         {data?.id && (
                 <div className="flex flex-col gap-2">
-                  <FormLabel>Create A Goal</FormLabel>
-                  <FormDescription>
+                  <Label>Create A Goal</Label>
+                  <strong>
                     ✨ Create a goal for your agency. As your business grows
                     your goals grow too so dont forget to set the bar higher!
-                  </FormDescription>
+                  </strong>
                   {/* <NumberInput
                     defaultValue={data?.goal}
                     onValueChange={async (val) => {
@@ -234,12 +235,13 @@ export default function AgencyDetails({data}: Props) {
                         description: `Updated the agency goal to | ${val} Sub Account`,
                         subaccountId: undefined,
                       })
-                      router.refresh()
+                      
                     }}
                     min={1}
                     className="bg-background !border !border-input"
                     placeholder="Sub Account Goal"
                   /> */}
+                  <Input type="number" defaultValue={data.goal} {...register("goal")} />
                 </div>
               )}
                <Button
@@ -251,7 +253,7 @@ export default function AgencyDetails({data}: Props) {
               </Button>
                 </form>
                 {data?.id && (
-            <div className="flex flex-row items-center justify-between rounded-lg border border-destructive gap-4 p-4 mt-4">
+            <div className="flex flex-col md:flex-row items-center justify-between rounded-lg border border-destructive gap-4 p-4 mt-4">
               <div>
                 <div>Danger Zone</div>
               </div>

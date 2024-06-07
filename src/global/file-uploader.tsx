@@ -8,11 +8,12 @@ import { useMutation } from "react-query";
 import { uploadLogo } from "@/api/uploadthing/route";
 import { useToast } from "@/component/components/ui/use-toast";
 import { ToastAction } from "@/component/components/ui/toast";
+import { getAgencydetails } from "@/lib/queries";
 
 type Props = {
-  agencyId: string | undefined;
-  logo: "subaccountLogo" | "agencyLogo";
-  name: string
+  agencyId?: string | undefined;
+  logo: "subaccountLogo" | "agencyLogo" | "profileImage";
+  name?: string
 };
 
 const uploadSchema = z.object({
@@ -35,6 +36,8 @@ export default function Fileuploader({ agencyId, logo, name }: Props) {
   const { register, handleSubmit, formState: { errors }, watch } = useForm<z.infer<typeof uploadSchema>>({
     resolver: zodResolver(uploadSchema),
   });
+
+  const agencyDetails = getAgencydetails(agencyId as string);
 
   const {toast} = useToast();
 
@@ -94,7 +97,7 @@ export default function Fileuploader({ agencyId, logo, name }: Props) {
   return (
     <div>
       <div className="mb-2">
-        <h1>{name} Logo</h1>
+        <h1>{name}</h1>
         {preview && (
           <div className="mt-2 flex justify-center items-center">
             <img src={preview} alt="Selected file preview" className="max-w-xs max-h-56" />
