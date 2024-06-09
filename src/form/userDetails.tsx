@@ -21,7 +21,7 @@ import { Switch } from '@/component/components/ui/switch';
 
 type Props = {
     type: "agency" | "subaccount",
-    id: string,
+    id: string | null,
     subaccount?: SubAccountType[],
     userData?: Partial<UserType>
 }

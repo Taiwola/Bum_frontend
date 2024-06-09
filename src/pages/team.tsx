@@ -1,7 +1,10 @@
-import { get_all_subaccount } from "@/api/subaccount/route";
+import { get_team_members } from "@/api/user/route";
+import { column } from "@/component/table/column";
+import DataTable from "@/component/table/data-table";
 import { getAgencydetails } from "@/lib/queries"; // Assuming getAgencydetails is a synchronous function
-import { SubAccountType } from "@/types/types";
-import { useEffect, useState } from "react";
+import {  UserType } from "@/types/types";
+import { Plus } from "lucide-react";
+import { useEffect } from "react";
 import { useQuery } from "react-query";
 
 type Props = {
@@ -10,11 +13,11 @@ type Props = {
 
 export default function Team({ params }: Props) {
   // Using react-query to fetch subaccounts
-  const { data: subaccounts, isError, error } = useQuery("getAllSubaccount", get_all_subaccount, {
+  const { data, isError, error } = useQuery("getTeamMemebers", () => get_team_members(params.agencyId), {
     retry: false
   });
 
-  // creating states for the sub accounts
+  const teamMembers: UserType[] = data;
 
 
   // Assuming getAgencydetails is a synchronous function
@@ -23,34 +26,26 @@ export default function Team({ params }: Props) {
   // Log the subaccounts and handle the error
   useEffect(() => {
     if (isError) {
-      console.error("Failed to fetch subaccounts:", error);
+      console.error("Failed to fetch team:", error);
     } else {
-      console.log("Subaccounts:", subaccounts);
+      console.log("team:", teamMembers);
     }
-  }, [subaccounts, isError, error]);
+  }, [teamMembers, isError, error]);
 
   if(!agencyDetails) return
 
   return (
     <div>
-      <h1>Team</h1>
-      <div>
-        <h2>Agency Details</h2>
-        <pre>{JSON.stringify(agencyDetails, null, 2)}</pre>
-      </div>
-      <div>
-        <h2>Subaccounts</h2>
-        {subaccounts ? (
-          subaccounts.map((subaccount: SubAccountType, index: number) => (
-            <div key={index}>
-              {/* Render each subaccount item */}
-              <p>{subaccount.name}</p>
-            </div>
-          ))
-        ) : (
-          <p>Loading...</p>
-        )}
-      </div>
+      <DataTable 
+      actionButtonText={<><Plus size={14} 
+      /> Add </>}
+      filterValue="name"
+      columns={column}
+      data={teamMembers}
+      >
+
+      </DataTable>
+      
     </div>
   );
 }

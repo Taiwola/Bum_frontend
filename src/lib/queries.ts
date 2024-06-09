@@ -2,6 +2,7 @@ import { get_agency } from "@/api/agency/route";
 import { verifyUser } from "@/api/auth/route";
 import { get_all_notification } from "@/api/notifications/route";
 import { get_all_subaccount, get_subaccount } from "@/api/subaccount/route";
+import { delete_user, get_user } from "@/api/user/route";
 import { AgencyType, Notification, PermissionsType, SubAccountType, UserType } from "@/types/types";
 import { useQuery } from "react-query";
 
@@ -88,4 +89,23 @@ export const getAllSubAccount = async () => {
     const subAccount: SubAccountType[] = data;
 
     return subAccount;
+}
+
+
+export const useUser = (userId: string) => {
+    return useQuery(['user', userId], () => get_user(userId));
+  };
+
+
+export const deleteUser = async (userId: string) => {
+    const {data, isError} = useQuery("deleteUser", () => delete_user(userId), {
+        retry: false
+    });
+
+
+    if (isError) return null;
+
+    const message = data as string;
+
+    return message
 }
