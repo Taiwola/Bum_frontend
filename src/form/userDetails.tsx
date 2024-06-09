@@ -198,7 +198,7 @@ export default function UserDetails({type, id, subaccount, userData}: Props) {
 
                   <div className='flex flex-col gap-4'>
                     {subaccount?.map((accounts) => {
-                     const subAccountPermissions = accounts.permissions.find((p) => p.subAccountId === accounts.id)
+                     const subAccountPermissions = accounts.permissions?.find((p) => p.subAccountId === accounts.id)
                      return <>
                      <div key={subAccountPermissions?.id} className='flex flex-col items-center justify-between'>
                       <div>

@@ -13,6 +13,7 @@ import AllSubaccount from "./pages/allSubaccount";
 import Billing from "./pages/billing";
 import Settings from "./pages/settings";
 import Launchpad from "./pages/launchpad";
+import Subaccount from "./pages/subaccount";
 
 function App() {
   const data = getAuthUserDetails();
@@ -42,7 +43,7 @@ function App() {
           path="/agency/:Id/team"
           element={
             <LayoutDash params={{agencyId: data.user?.agencyId || ""}}>
-              <Team />
+              <Team params={{agencyId: data.user?.agencyId as string}} />
             </LayoutDash>
         }
           />
@@ -51,7 +52,7 @@ function App() {
           path="/agency/:Id/all-subaccounts"
           element={
             <LayoutDash params={{agencyId: data.user?.agencyId || ""}}>
-              <AllSubaccount />
+              <AllSubaccount params={{agencyId: data.user?.agencyId as string || ""}}/>
             </LayoutDash>
         }
           />
@@ -80,6 +81,13 @@ function App() {
               <Settings />
             </LayoutDash>
         }
+          />
+
+          <Route
+          path="/subaccount/:Id"
+          element={
+            <Subaccount />
+          }
           />
           
         </Route>

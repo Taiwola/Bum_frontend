@@ -1,11 +1,8 @@
-import { create_agency } from "@/api/agency/route";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/component/components/ui/alert-dialog";
+import { create_subaccount } from "@/api/subaccount/route";
 import { Button } from "@/component/components/ui/button";
-import { Card, CardContent, CardDescription, CardTitle } from "@/component/components/ui/card";
-import {  FormDescription, FormLabel,  } from "@/component/components/ui/form";
+import { Card, CardContent } from "@/component/components/ui/card";
 import { Input } from "@/component/components/ui/input";
 import { Label } from "@/component/components/ui/label";
-import { Switch } from "@/component/components/ui/switch";
 import { useToast } from "@/component/components/ui/use-toast"
 import Fileuploader from "@/global/file-uploader";
 import Loading from "@/global/loading";
@@ -25,7 +22,7 @@ interface SubAccountDetailsProps {
   }
 
 const formSchema = z.object({
-    name: z.string().min(2, {message: 'Select an image or refresh the page'}),
+    name: z.string().min(2),
     companyEmail: z.string().min(1),
     companyPhone: z.string().min(1),
     address: z.string().min(1),
@@ -33,18 +30,17 @@ const formSchema = z.object({
     state: z.string().min(1),
     country: z.string().min(1),
     zipCode: z.string().min(1),
-    whiteLabel: z.boolean(),
-    subAccountLogo: z.string().min(1),
+    subAccountLogo: z.string().min(1, {message: "An Image must be selected"}),
 });
 
-export type agencyTypeSchema = z.infer<typeof formSchema>;
+export type SubAccountTypeSchema = z.infer<typeof formSchema>;
 
-const SubAccountDetails: React.FC<SubAccountDetailsProps> = ({agencyDetails, userId, userName, details}) => {
+const SubAccountDetails: React.FC<SubAccountDetailsProps> = ({agencyDetails, details}) => {
     const {toast} = useToast();
-    const [subaccountLogo, setsubaccountLogoS] = useState<string>(() =>
+    const [subaccountLogo] = useState<string>(() =>
         sessionStorage.getItem("subaccountLogo") || ""
       );
-    const {handleSubmit, reset, register, formState: {isLoading, errors}, setValue, watch} = useForm<z.infer<typeof formSchema>>({
+    const {handleSubmit, reset, register, formState: {isLoading, errors}} = useForm<z.infer<typeof formSchema>>({
         mode: "onChange",
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -60,25 +56,24 @@ const SubAccountDetails: React.FC<SubAccountDetailsProps> = ({agencyDetails, use
         }
     });
 
-    // const onMutation = useMutation(create_agency, {
-    //     onSuccess:  async (message: string) => {
-    //       toast({
-    //         title: "Agency uploaded",
-    //         description: message,
-    //         variant: "default",
-    //         className: "border text-black font-medium dark:bg-black dark:text-white"
-    //       });
-    //       reset();
-    //       navigate(0);
-    //     },
-    //     onError: async (message:string) => {
-    //       toast({
-    //         title: "oops",
-    //         description: message,
-    //         variant: "destructive",
-    //       })
-    //     }
-    // });
+    const onMutation = useMutation(create_subaccount, {
+        onSuccess:  async (message: string) => {
+          toast({
+            title: "Sub Account",
+            description: message,
+            variant: "default",
+            className: "border text-black font-medium dark:bg-black dark:text-white"
+          });
+          reset();
+        },
+        onError: async (message:string) => {
+          toast({
+            title: "oops",
+            description: message,
+            variant: "destructive",
+          })
+        }
+    });
 
     useEffect(() => {
         if (details) {
@@ -86,9 +81,9 @@ const SubAccountDetails: React.FC<SubAccountDetailsProps> = ({agencyDetails, use
         }
     }, [details]);
 
-    const submit = (formData: agencyTypeSchema) => {
+    const submit = (formData: SubAccountTypeSchema) => {
         console.log(formData);
-        // onMutation.mutate(formData);
+        onMutation.mutate(formData);
         toast({
             title: 'Updating agency details',
             description: 'Please wait while we update your agency details',
@@ -131,22 +126,22 @@ const SubAccountDetails: React.FC<SubAccountDetailsProps> = ({agencyDetails, use
                     <div className="flex md:flex-row md:w-full gap-4">
                         <div className="md:w-full">
                             <Label htmlFor="name">Sub Account Name</Label>
-                            <Input type="text" placeholder="Your Agency Name" disabled={isLoading} {...register("name")} name="name"/>
+                            <Input type="text" placeholder="Your sub account Name" disabled={isLoading} {...register("name")} name="name"/>
                             {errors.name ? (
                                 <span className="text-sm text-red-500 text-muted-foregrounduted">{errors?.name.message}</span>
                             ) : ""}
                         </div>
                         <div className="md:w-full">
-                            <Label htmlFor="email">Sub Account Email</Label>
-                            <Input type="email" placeholder="Your Agency Email" disabled={isLoading} {...register("companyEmail")} name="email"/>
-                            {errors.companyEmail ? (
+                        <Label htmlFor="name">Sub Account Email</Label>
+                            <Input type="text" placeholder="Your sub account Email" disabled={isLoading} {...register("companyEmail")} name="companyEmail"/>
+                            {errors?.companyEmail ? (
                                 <span className="text-sm text-red-500 text-muted-foregrounduted">{errors?.companyEmail.message}</span>
                             ) : ""}
                         </div>
                     </div>
                     <div>
                             <Label htmlFor="companyPhone">Sub Account Phone number</Label>
-                            <Input type="text" placeholder="Your Agency Name" disabled={isLoading} {...register("companyPhone")} name="companyPhone"/>
+                            <Input type="text" placeholder="Your sub account number" disabled={isLoading} {...register("companyPhone")} name="companyPhone"/>
                             {errors.companyPhone ? (
                                 <span className="text-sm text-red-500 text-muted-foregrounduted">{errors?.companyPhone.message}</span>
                             ) : ""}
@@ -154,7 +149,7 @@ const SubAccountDetails: React.FC<SubAccountDetailsProps> = ({agencyDetails, use
 
                         <div>
                             <Label htmlFor="address">Agency Address</Label>
-                            <Input type="text" placeholder="Your Agency Address" disabled={isLoading} {...register("address")} name="address"/>
+                            <Input type="text" placeholder="Your sub account address" disabled={isLoading} {...register("address")} name="address"/>
                             {errors.address ? (
                                 <span className="text-sm text-red-500 text-muted-foregrounduted">{errors?.address.message}</span>
                             ) : ""}
@@ -175,9 +170,9 @@ const SubAccountDetails: React.FC<SubAccountDetailsProps> = ({agencyDetails, use
                             ) : ""}
                         </div>
                         <div className="w-full">
-                            <Label htmlFor="zipcode">Zipcode</Label>
-                            <Input type="text" placeholder="Zipcode" disabled={isLoading} {...register("zipCode")} name="zipcode"/>
-                            {errors.zipCode ? (
+                        <Label htmlFor="name">ZipCode</Label>
+                            <Input type="text" placeholder="ZipCode" disabled={isLoading} {...register("zipCode")} name="zipCode"/>
+                            {errors?.zipCode ? (
                                 <span className="text-sm text-red-500 text-muted-foregrounduted">{errors?.zipCode.message}</span>
                             ) : ""}
                         </div>

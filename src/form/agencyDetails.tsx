@@ -2,7 +2,6 @@ import { create_agency } from "@/api/agency/route";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/component/components/ui/alert-dialog";
 import { Button } from "@/component/components/ui/button";
 import { Card, CardContent, CardDescription, CardTitle } from "@/component/components/ui/card";
-import {  FormDescription, FormLabel,  } from "@/component/components/ui/form";
 import { Input } from "@/component/components/ui/input";
 import { Label } from "@/component/components/ui/label";
 import { Switch } from "@/component/components/ui/switch";
@@ -22,7 +21,7 @@ type Props = {
 }
 
 const formSchema = z.object({
-    name: z.string().min(2, {message: 'Select an image or refresh the page'}),
+    name: z.string().min(2),
     companyEmail: z.string().min(1),
     companyPhone: z.string().min(1),
     address: z.string().min(1),
@@ -32,7 +31,7 @@ const formSchema = z.object({
     zipCode: z.string().min(1),
     whiteLabel: z.boolean(),
     agencyLogo: z.string().min(1),
-    goal: z.number()
+    goal: z.number().optional()
 });
 
 export type agencyTypeSchema = z.infer<typeof formSchema>;
@@ -41,7 +40,7 @@ export default function AgencyDetails({data}: Props) {
     const {toast} = useToast();
     const navigate = useNavigate();
     const [deletingAgency, setDeletingAgency] = useState(false);
-    const [agencyLogoS, setAgencyLogoS] = useState<string>(() =>
+    const [agencyLogoS] = useState<string>(() =>
         sessionStorage.getItem("agencyLogo") || ""
       );
     const {handleSubmit, reset, register, formState: {isLoading, errors}, setValue, watch} = useForm<z.infer<typeof formSchema>>({
@@ -64,7 +63,7 @@ export default function AgencyDetails({data}: Props) {
     const onMutation = useMutation(create_agency, {
         onSuccess:  async (message: string) => {
           toast({
-            title: "Agency uploaded",
+            title: "Agency",
             description: message,
             variant: "default",
             className: "border text-black font-medium dark:bg-black dark:text-white"
@@ -93,14 +92,12 @@ export default function AgencyDetails({data}: Props) {
     }, [data, setValue]);
 
     const submit = (formData: agencyTypeSchema) => {
-        console.log(formData);
         onMutation.mutate(formData);
         toast({
             title: 'Updating agency details',
             description: 'Please wait while we update your agency details',
         })
     }
-
 
       const handleDeleteAgency = async () => {
         if (!data?.id) return
@@ -124,6 +121,7 @@ export default function AgencyDetails({data}: Props) {
         setDeletingAgency(false)
       }
 
+
   return (
         <AlertDialog>
             <Card className="mt-3">
@@ -136,15 +134,18 @@ export default function AgencyDetails({data}: Props) {
                 <CardContent>
                     <Fileuploader name="Agency" logo="agencyLogo" agencyId={data.id}/>
                 <form onSubmit={handleSubmit(submit)} className="space-y-4">
-                    <Input type="text" value={agencyLogoS as string}  {...register("agencyLogo")} className="hidden"/>
+                <div className="flex md:flex-row md:w-full gap-4">
+                <Input type="text" value={agencyLogoS as string}  {...register("agencyLogo")} className="hidden"/>
                     {errors.agencyLogo ? (
                                 <span className="text-sm text-red-500 text-muted-foregrounduted">{errors?.agencyLogo.message}</span>
                             ) : ""}
+                </div>
+
                     <div className="flex md:flex-row md:w-full gap-4">
                         <div className="md:w-full">
                             <Label htmlFor="name">Agency Name</Label>
                             <Input type="text" placeholder="Your Agency Name" disabled={isLoading} {...register("name")} name="name"/>
-                            {errors.name ? (
+                            {errors?.name ? (
                                 <span className="text-sm text-red-500 text-muted-foregrounduted">{errors?.name.message}</span>
                             ) : ""}
                         </div>
@@ -206,7 +207,7 @@ export default function AgencyDetails({data}: Props) {
                         <div className="w-full">
                             <Label htmlFor="zipcode">Zipcode</Label>
                             <Input type="text" placeholder="Zipcode" disabled={isLoading} {...register("zipCode")} name="zipcode"/>
-                            {errors.zipCode ? (
+                            {errors?.zipCode ? (
                                 <span className="text-sm text-red-500 text-muted-foregrounduted">{errors?.zipCode.message}</span>
                             ) : ""}
                         </div>

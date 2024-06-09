@@ -182,7 +182,7 @@ export default function MenuOptions({defaultOpen, subAccounts, sideBarOpts,sideB
                           agencyDetails={user?.agency as AgencyType}
                           userId={user.id as string}
                           userName={user.name as string}
-                          details={details}
+                          
                         />}
                       </CustomModel>
                     

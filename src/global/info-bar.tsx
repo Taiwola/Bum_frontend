@@ -6,7 +6,7 @@ import { ModeToggle } from '@/component/components/ui/theme-toggle'
 import { getAuthUserDetails } from '@/lib/queries'
 import { Notification, RoleEnum } from '@/types/types'
 import { Bell } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { twMerge } from 'tailwind-merge'
 
 type Props = {
@@ -18,22 +18,24 @@ type Props = {
 
 export default function InfoBar({notification, className, role, subAccountId}: Props) {
     const [allNotifications, setAllNotifications] = useState(notification);
-    const [showAll, setShowAll] = useState(true)
+    const [showAll, setShowAll] = useState(false)
 
     const data = getAuthUserDetails();
     const fallbackName = data.user?.name.slice(0,2).toUpperCase();
 
-    const handleChange = () => {
-        if (!showAll) {
-            setAllNotifications(notification);
-        } else {
-            if (notification?.length !== 0) {
-                notification.filter((item) => item.id === subAccountId ?? []);
-            }
-        }
+    useEffect(() => {
+        setShowAll(!showAll);
+    }, [])
 
-        setShowAll((prev) => !prev);
-    }
+    const handleChange = () => {
+        if (showAll) {
+            setAllNotifications(notification.filter((item) => item.subAccountId === subAccountId));
+        } else {
+            setAllNotifications(notification);
+        }
+        setShowAll(!showAll);
+    };
+
   return (
     <>
         <div className={twMerge(
@@ -42,7 +44,7 @@ export default function InfoBar({notification, className, role, subAccountId}: P
         )}>
             <div className='flex items-center ml-auto gap-2'>
                 <Avatar>
-                    <AvatarImage src={data.user?.avatarUrl as string} />
+                    <AvatarImage src={data.user?.avatarUrl ? data.user.avatarUrl : ""} />
                     <AvatarFallback>{fallbackName}</AvatarFallback>
                 </Avatar>
 
@@ -59,7 +61,10 @@ export default function InfoBar({notification, className, role, subAccountId}: P
                             {role === RoleEnum.AGENCY_ADMIN || role === RoleEnum.AGENCY_OWNER && (
                                 <Card className='flex items-center justify-between p-4'>
                                     Current Subaccount
-                                    <Switch onChangeCapture={handleChange}/>
+                                    <Switch
+                                    
+                                    onClick={handleChange}
+                                    />
                                 </Card>
                             )}
                         </SheetDescription>
@@ -68,7 +73,7 @@ export default function InfoBar({notification, className, role, subAccountId}: P
                             allNotifications.map((notifications) => (
                                 <div className='flex flex-col gap-y-2 mb-2 overflow-x-scroll text-ellipsis' key={notifications.id}>
                                     <Avatar>
-                                        <AvatarImage src={notifications.user.avatarUrl as string} alt='Profile url'/>
+                                        <AvatarImage src={notifications.user?.avatarUrl === null ? "" : notifications.user?.avatarUrl} alt='Profile url'/>
                                         <AvatarFallback>
                                             {notifications.user.name.slice(0,2).toUpperCase()}
                                         </AvatarFallback>

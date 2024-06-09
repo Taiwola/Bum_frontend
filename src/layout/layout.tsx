@@ -1,3 +1,4 @@
+import { get_all_notification } from '@/api/notifications/route';
 import Sidebar from '@/component/sidebar';
 import BlurPage from '@/global/blur-page';
 import InfoBar from '@/global/info-bar';
@@ -5,6 +6,7 @@ import { getAgencydetails, getAuthUserDetails } from '@/lib/queries'
 import { ThemeProvider } from '@/providers/theme-provider';
 import { Notification, RoleEnum } from '@/types/types';
 import React from 'react'
+import { useQuery } from 'react-query';
 import { Navigate } from 'react-router-dom';
 
 type Props = {
@@ -13,6 +15,17 @@ type Props = {
 }
 
 export default function LayoutDash({children, params}: Props) {
+
+    const {data: notification, isError} =  useQuery("getAllNotification", () => get_all_notification(), {
+        retry: false
+    });
+
+    if (isError) {
+        return [];
+    }
+    
+    const noti: Notification[] = notification || [];
+
     const data = getAuthUserDetails();
 
     if (!data.user) {
@@ -28,13 +41,14 @@ export default function LayoutDash({children, params}: Props) {
     }
 
     let allNoti: Notification[] = [];
-    
-    const agency = getAgencydetails(data.user?.agencyId as string);
-        const notifications = agency?.notifications;
-    
-        if (notifications) {
-          allNoti = notifications;
-        }
+
+    const agency = getAgencydetails(data.user?.agencyId as string); // Await the async function
+    if (agency) { // Check if agency is defined
+      const notifications: Notification[] = noti.filter((notification) => notification.agencyId === agency.id);
+      if (notifications.length > 0) {
+        allNoti.push(...notifications);
+      }
+    }
         
   return (
     <ThemeProvider
@@ -44,7 +58,7 @@ export default function LayoutDash({children, params}: Props) {
     <div className='h-screen overflow-hidden'>
         <Sidebar id={params.agencyId} type='agency' />
         <div className='md:pl-[300px]'>
-            <InfoBar notification={allNoti} />
+            <InfoBar notification={allNoti}  role={data.user.role}/>
             <div className='relative'>
                 <BlurPage>
                     {children}

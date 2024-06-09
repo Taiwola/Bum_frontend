@@ -37,8 +37,6 @@ export default function Fileuploader({ agencyId, logo, name }: Props) {
     resolver: zodResolver(uploadSchema),
   });
 
-  const agencyDetails = getAgencydetails(agencyId as string);
-
   const {toast} = useToast();
 
   const onMutation = useMutation(uploadLogo, {

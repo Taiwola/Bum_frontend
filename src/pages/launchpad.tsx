@@ -66,7 +66,7 @@ export default function Launchpad({}: Props) {
                 className="rounded-md object-contain"
               />
               <p>
-                Connect your stripe account to accept payments and see your
+                Connect your payment account to accept payments and see your
                 dashboard.
               </p>
             </div>
