@@ -27,7 +27,7 @@ export const get_team_members = async (agencyId: string) => {
 export const get_user = async (userId: string) => {
     const token = sessionStorage.getItem("token");
 
-    const res = await fetch(`${API_BASE_URL}/api/user/team/${userId}`,{
+    const res = await fetch(`${API_BASE_URL}/api/user/${userId}`,{
         method: 'GET',
         headers: {
             "Content-Type": "application/json",
@@ -49,7 +49,7 @@ export const get_user = async (userId: string) => {
 export const delete_user = async (userId: string) => {
     const token = sessionStorage.getItem("token");
 
-    const res = await fetch(`${API_BASE_URL}/api/user/team/${userId}`,{
+    const res = await fetch(`${API_BASE_URL}/api/user/${userId}`,{
         method: 'DELETE',
         headers: {
             "Content-Type": "application/json",

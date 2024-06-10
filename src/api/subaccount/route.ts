@@ -57,7 +57,7 @@ export const get_all_subaccount = async () => {
     });
 
     if (!res.ok) {
-        console.error("Failed to create agency", res.statusText);
+        console.error("Failed to get all sub accounts", res.statusText);
         return null;
     }
 
@@ -67,6 +67,21 @@ export const get_all_subaccount = async () => {
 }
 
 export const delete_subaccount = async (subAccountId: string) => {
-    console.log(subAccountId);
-    return "success";
+  const token = sessionStorage.getItem("token");
+  const res = await fetch(`${API_BASE_URL}/api/subaccount/${subAccountId}`, {
+    method: "DELETE",
+    headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+    }
+});
+
+if (!res.ok) {
+    console.error("Failed to delete sub account", res.statusText);
+    return null;
+}
+const response = await res.json();
+
+return response.message;
+
 }

@@ -1,10 +1,10 @@
 import { get_agency } from "@/api/agency/route";
-import { verifyUser } from "@/api/auth/route";
+import { logOut, verifyUser } from "@/api/auth/route";
 import { get_all_notification } from "@/api/notifications/route";
 import { get_all_subaccount, get_subaccount } from "@/api/subaccount/route";
 import { delete_user, get_user } from "@/api/user/route";
 import { AgencyType, Notification, PermissionsType, SubAccountType, UserType } from "@/types/types";
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 
 export const getAuthUserDetails = () => {
     const { data, isLoading, isError } = useQuery('verifyUser', verifyUser, {
@@ -97,7 +97,7 @@ export const useUser = (userId: string) => {
   };
 
 
-export const deleteUser = async (userId: string) => {
+export const deleteUser = (userId: string) => {
     const {data, isError} = useQuery("deleteUser", () => delete_user(userId), {
         retry: false
     });
@@ -108,4 +108,31 @@ export const deleteUser = async (userId: string) => {
     const message = data as string;
 
     return message
+}
+
+export const useDeleteUser = () => {
+    const queryClient = useQueryClient();
+  
+    return useMutation(
+      (userId: string) => delete_user(userId),
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries('users'); // Invalidate the 'users' query to refresh the data
+        },
+      }
+    );
+  };
+
+
+export const loggingUserOut = async () => {
+    const {data, isError} = useMutation('logUserOut', () => logOut(), {
+        retry: false
+    });
+
+    if (isError) {
+        console.log(isError);
+        return null
+    }
+
+    return data;
 }

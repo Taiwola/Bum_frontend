@@ -5,7 +5,6 @@ import { AuthUserWithAgencySideBarOptionSubAccount, RoleEnum, SubAccountType, Us
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
 import { string, z } from 'zod';
 import { useMutation } from 'react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/component/components/ui/card';
@@ -28,20 +27,23 @@ type Props = {
 
 // TODO: WRITE THE BACKEND CODE TO CHANGE PERMISSION, WRITE THE BACKEND CODE TO EDIT THE USER DETAILS AND WRITE THE BACKEND CODE FOR NOTIFICATION AND WRITE THE ROUTE AND CONSUME THEM FROM THE BACKEND
 
-export default function UserDetails({type, id, subaccount, userData}: Props) {
+export default function EditUserDetails({type, id, subaccount, userData}: Props) {
     const [subAccountPermission, setSubAccountPermission] = useState<UserWithPermissionAndSubccount | null>(null);
     const {data, setClose} = useModal();
     const [roleState, setRoleState] = useState("");
     const [loadingPermission, setLoadingPermission] = useState(false);
     const [authUserData, setAuthUserData] = useState<AuthUserWithAgencySideBarOptionSubAccount | null>(null)
     const {toast} = useToast();
-    const navigate = useNavigate();
     const [profileImage, setProfileImage] = useState<string>(() => 
       sessionStorage.getItem("profileImage") || ""
     );
     const [role, setRole] = useState('');
   
     //const onMutation = useMutation();
+    // const authUser = getAuthUserDetails();
+    // console.log(authUser.user);
+    // const user = authUser?.user
+
 
     useEffect(() => {
         if (data.user) {
@@ -107,7 +109,6 @@ export default function UserDetails({type, id, subaccount, userData}: Props) {
       }
 
       const onChangePermission = async (subAccountId: string, value: boolean, permisssionId: string | undefined) => {
-        alert("permission");
         if (!userData?.email) return;
         if (!permisssionId) return
         setLoadingPermission(true);
@@ -121,8 +122,6 @@ export default function UserDetails({type, id, subaccount, userData}: Props) {
           });
           return
         }
-
-        navigate(0);
         setLoadingPermission(false);
       }
     
@@ -201,10 +200,12 @@ export default function UserDetails({type, id, subaccount, userData}: Props) {
                   <div className='flex flex-col gap-4'>
                     {subaccount?.map((accounts) => {
                      const subAccountPermissions = accounts.permissions?.find((p) => p.subAccountId === accounts.id)
+                     
                      return <>
                      <div key={subAccountPermissions?.id} className='flex items-center justify-between'>
                       <div>
                         <p>{accounts.name}</p>
+                        <p>{subAccountPermissions?.email}</p>
                         </div> 
                         <Switch 
                         disabled={loadingPermission} 

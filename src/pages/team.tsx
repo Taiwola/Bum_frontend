@@ -1,6 +1,7 @@
 import { get_team_members } from "@/api/user/route";
 import { column } from "@/component/table/column";
 import DataTable from "@/component/table/data-table";
+import SendInvitation from "@/form/send-invitation";
 import { getAgencydetails } from "@/lib/queries"; // Assuming getAgencydetails is a synchronous function
 import {  UserType } from "@/types/types";
 import { Plus } from "lucide-react";
@@ -17,7 +18,7 @@ export default function Team({ params }: Props) {
     retry: false
   });
 
-  const teamMembers: UserType[] = data;
+  const teamMembers: UserType[] = data || [];
 
 
   // Assuming getAgencydetails is a synchronous function
@@ -27,9 +28,7 @@ export default function Team({ params }: Props) {
   useEffect(() => {
     if (isError) {
       console.error("Failed to fetch team:", error);
-    } else {
-      console.log("team:", teamMembers);
-    }
+    } 
   }, [teamMembers, isError, error]);
 
   if(!agencyDetails) return
@@ -42,6 +41,7 @@ export default function Team({ params }: Props) {
       filterValue="name"
       columns={column}
       data={teamMembers}
+      modalChildren={<SendInvitation agencyId={agencyDetails?.id} />}
       >
 
       </DataTable>

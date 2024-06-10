@@ -23,14 +23,14 @@ import {
 import { Button } from '@/component/components/ui/button'
 import { Copy, Edit, MoreHorizontal, Trash } from 'lucide-react'
 import { useModal } from '@/providers/model-provider-file'
-import UserDetails from '@/form/userDetails'
 import { useToast } from '@/component/components/ui/use-toast'
 import { useState } from 'react'
 import CustomModel from '@/global/custom-model'
 import { RoleEnum, UserType } from '@/types/types'
-import { deleteUser, useUser } from '@/lib/queries'
+import { useDeleteUser } from '@/lib/queries'
 import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar'
 import { useNavigate } from 'react-router-dom'
+import EditUserDetails from '@/form/editUser'
 
 export const column: ColumnDef<UserType>[] = [
     {
@@ -50,11 +50,6 @@ export const column: ColumnDef<UserType>[] = [
           return (
             <div className="flex items-center gap-4">
               <div className="h-11 w-11 relative flex-none">
-                {/* <img
-                  src={avatarUrl}
-                  className="rounded-full object-cover"
-                  alt="avatar image"
-                /> */}
                 <Avatar>
                     <AvatarImage src={avatarUrl} />
                     <AvatarFallback>{fallbackName}</AvatarFallback>
@@ -150,10 +145,11 @@ interface CellActionsProps {
 
 const CellActions: React.FC<CellActionsProps> = ({rowData}) => {
     const navigate = useNavigate()
-    const {data: user} = useUser(rowData?.id)
+   // const {data: user} = useUser(rowData?.id)
     const { setOpen } = useModal()
   const { toast } = useToast()
   const [loading, setLoading] = useState(false);
+  const { mutate: deleteUser } = useDeleteUser();
   if(!rowData) return;
   if(!rowData.agency)return;
 
@@ -186,10 +182,11 @@ const CellActions: React.FC<CellActionsProps> = ({rowData}) => {
                   subheading="You can change permissions only when the user has an owned subaccount"
                   title="Edit User Details"
                 >
-                  <UserDetails
+                  <EditUserDetails
                     type="agency"
                     id={rowData?.agency?.id as string | null}
                     subaccount={rowData?.agency?.subAccounts}
+                    userData={rowData}
                   />
                 </CustomModel>,
                 // async () => {
@@ -201,7 +198,7 @@ const CellActions: React.FC<CellActionsProps> = ({rowData}) => {
             <Edit size={15} />
             Edit Details
           </DropdownMenuItem>
-          {rowData.role === 'AGENCY_OWNER' && (
+          {rowData.role !== 'AGENCY_OWNER' && (
             <AlertDialogTrigger asChild>
               <DropdownMenuItem
                 className="flex gap-2"
@@ -228,13 +225,15 @@ const CellActions: React.FC<CellActionsProps> = ({rowData}) => {
           <AlertDialogAction
             disabled={loading}
             className="bg-destructive hover:bg-destructive"
-            onClick={async () => {
+            onClick={() => {
               setLoading(true)
-              await deleteUser(rowData.id)
-              toast({
-                title: 'Deleted User',
-                description:
-                  'The user has been deleted from this agency they no longer have access to the agency',
+              deleteUser(rowData.id, {
+                onSuccess: () => {
+                  toast({
+                    title: 'Deleted User',
+                    description: 'The user has been deleted from this agency. They no longer have access to the agency.',
+                  });
+                }
               })
               setLoading(false)
               navigate(0)

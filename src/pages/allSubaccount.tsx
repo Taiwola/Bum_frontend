@@ -18,7 +18,6 @@ export default function AllSubaccount({params}: Props) {
 
   const agencyDetails = getAgencydetails(user?.agencyId as string);
 
-
   return (
    <AlertDialog>
     <div className="flex flex-col">

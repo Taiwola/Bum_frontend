@@ -59,11 +59,31 @@ export const verifyUser = async () => {
         headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
-
         }
     });
     const response = await res.json();
     if (!res.ok) return null;
 
     return response.data;
+}
+
+export const logOut = async () => {
+    const token = sessionStorage.getItem("token");
+
+    const res = await fetch(`${API_BASE_URL}/api/user/logout`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        }
+    });
+
+    if (!res.ok) {
+        console.error("Failed to create agency", res.statusText);
+        return null;
+    };
+
+    const response = await res.json();
+
+    return response.message;
 }

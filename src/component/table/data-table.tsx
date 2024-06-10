@@ -25,6 +25,7 @@ export default function DataTable<Tdata, Tvalue>({columns, data, filterValue, ac
         getFilteredRowModel:getFilteredRowModel()
     })
   return (
+    <>
     <div className="flex flex-col items-center justify-between">
         <div className="flex self-end items-center py-4 gap-2">
             <Search />
@@ -34,7 +35,7 @@ export default function DataTable<Tdata, Tvalue>({columns, data, filterValue, ac
             }}
             className="h-12"
             />
-            <Button className="flex gap-2" onClick={() => {
+            <Button className="flex bg-bodyTheme-default gap-2" onClick={() => {
                 if (modalChildren) {
                     setOpen(
                         <CustomModel
@@ -47,7 +48,8 @@ export default function DataTable<Tdata, Tvalue>({columns, data, filterValue, ac
                 }
             }}>{actionButtonText}</Button>
         </div>
-        <div className="border bg-background rounded-lg">
+    </div>
+    <div className="border bg-background rounded-lg">
             <Table>
             <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -82,6 +84,6 @@ export default function DataTable<Tdata, Tvalue>({columns, data, filterValue, ac
           </TableBody>
             </Table>
         </div>
-    </div>
+    </>
   )
 }

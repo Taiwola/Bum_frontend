@@ -1,8 +1,11 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/component/components/ui/avatar'
+import { Button } from '@/component/components/ui/button'
 import { Card } from '@/component/components/ui/card'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/component/components/ui/dropdown-menu'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/component/components/ui/sheet'
 import { Switch } from '@/component/components/ui/switch'
 import { ModeToggle } from '@/component/components/ui/theme-toggle'
+import LogoutButton from '@/component/logoutButton'
 import { getAuthUserDetails } from '@/lib/queries'
 import { Notification, RoleEnum } from '@/types/types'
 import { Bell } from 'lucide-react'
@@ -43,10 +46,17 @@ export default function InfoBar({notification, className, role, subAccountId}: P
           className
         )}>
             <div className='flex items-center ml-auto gap-2'>
+               <DropdownMenu>
+                <DropdownMenuTrigger asChild className='cursor-pointer'>
                 <Avatar>
                     <AvatarImage src={data.user?.avatarUrl ? data.user.avatarUrl : ""} />
                     <AvatarFallback>{fallbackName}</AvatarFallback>
                 </Avatar>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className='flex items-center justify-center'>
+                    <LogoutButton />
+                </DropdownMenuContent>
+               </DropdownMenu>
 
                 <Sheet>
                     <SheetTrigger>
