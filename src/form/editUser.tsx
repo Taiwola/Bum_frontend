@@ -1,5 +1,5 @@
 import { useToast } from '@/component/components/ui/use-toast';
-import { changeUserPermission, getAuthUserDetails, getUserPermission } from '@/lib/queries';
+import { changeUserPermission, getAuthUserDetails, getUserPermission, updateUser } from '@/lib/queries';
 import { useModal } from '@/providers/model-provider-file';
 import { AuthUserWithAgencySideBarOptionSubAccount, RoleEnum, SubAccountType, UserType, UserWithPermissionAndSubccount } from '@/types/types'
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -17,6 +17,7 @@ import Loading from '@/global/loading';
 import { Separator } from '@/component/components/ui/separator';
 import ImageData from '@/component/imageData';
 import { Switch } from '@/component/components/ui/switch';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {
     type: "agency" | "subaccount",
@@ -38,13 +39,9 @@ export default function EditUserDetails({type, id, subaccount, userData}: Props)
       sessionStorage.getItem("profileImage") || ""
     );
     const [role, setRole] = useState('');
-  
-    //const onMutation = useMutation();
-    // const authUser = getAuthUserDetails();
-    // console.log(authUser.user);
-    // const user = authUser?.user
-
-
+    
+    
+    
     useEffect(() => {
         if (data.user) {
             const fetchDetails = async () => {
@@ -57,9 +54,10 @@ export default function EditUserDetails({type, id, subaccount, userData}: Props)
                 }
             }
             fetchDetails();
-        }
-    }, [data]);
-
+            }
+            }, [data]);
+            
+        
 
     const userDataSchema = z.object({
         name: z.string().min(1),
@@ -105,8 +103,26 @@ export default function EditUserDetails({type, id, subaccount, userData}: Props)
 
 
       const submit = (value: z.infer<typeof userDataSchema>) => {
-        console.log(value);
+        const update = () => {
+          const userUpdate = updateUser(userData?.id as string, value);
+
+          if (!userUpdate) {
+                 toast({
+            title: "Update",
+           description: "opps, something went wrong",
+          variant: "destructive"
+       });
+          }
+
+     toast({
+        title: "Update",
+       description: "user updated",
+   })
+   window.location.reload();
+        }
+        update();
       }
+
 
       const onChangePermission = async (subAccountId: string, value: boolean, permisssionId: string | undefined) => {
         if (!userData?.email) return;

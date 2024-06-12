@@ -1,12 +1,12 @@
 import { useToast } from '@/component/components/ui/use-toast';
-import { changeUserPermission, getAuthUserDetails, getUserPermission } from '@/lib/queries';
+import { changeUserPermission, getAuthUserDetails, getUserPermission, updateUser } from '@/lib/queries';
 import { useModal } from '@/providers/model-provider-file';
 import { AuthUserWithAgencySideBarOptionSubAccount, RoleEnum, SubAccountType, UserType, UserWithPermissionAndSubccount } from '@/types/types'
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { string, z } from 'zod';
+import { z } from 'zod';
 import { useMutation } from 'react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/component/components/ui/card';
 import { Label } from '@radix-ui/react-dropdown-menu';
@@ -18,6 +18,7 @@ import Loading from '@/global/loading';
 import { Separator } from '@/component/components/ui/separator';
 import ImageData from '@/component/imageData';
 import { Switch } from '@/component/components/ui/switch';
+import { update_user } from '@/api/user/route';
 
 type Props = {
     type: "agency" | "subaccount",
@@ -25,6 +26,22 @@ type Props = {
     subaccount?: SubAccountType[],
     userData?: Partial<UserType>
 }
+
+
+const userDataSchema = z.object({
+  name: z.string().min(1),
+  email: z.string().email(),
+  avatarUrl: z.string(),
+  role: z.enum([
+    'AGENCY_OWNER',
+    'AGENCY_ADMIN',
+    'SUBACCOUNT_USER',
+    'SUBACCOUNT_GUEST',
+  ]),
+})
+
+
+export type userDataType = z.infer<typeof userDataSchema>;
 
 // TODO: WRITE THE BACKEND CODE TO CHANGE PERMISSION, WRITE THE BACKEND CODE TO EDIT THE USER DETAILS AND WRITE THE BACKEND CODE FOR NOTIFICATION AND WRITE THE ROUTE AND CONSUME THEM FROM THE BACKEND
 
@@ -41,7 +58,7 @@ export default function UserDetails({type, id, subaccount, userData}: Props) {
     );
     const [role, setRole] = useState('');
   
-    //const onMutation = useMutation();
+    
 
     useEffect(() => {
         if (data.user) {
@@ -59,17 +76,7 @@ export default function UserDetails({type, id, subaccount, userData}: Props) {
     }, [data]);
 
 
-    const userDataSchema = z.object({
-        name: z.string().min(1),
-        email: z.string().email(),
-        avatarUrl: z.string(),
-        role: z.enum([
-          'AGENCY_OWNER',
-          'AGENCY_ADMIN',
-          'SUBACCOUNT_USER',
-          'SUBACCOUNT_GUEST',
-        ]),
-      })
+    
 
       const {handleSubmit, register, formState: {errors, isSubmitting}} = useForm<z.infer<typeof userDataSchema>>({
         resolver: zodResolver(userDataSchema),
@@ -103,7 +110,24 @@ export default function UserDetails({type, id, subaccount, userData}: Props) {
 
 
       const submit = (value: z.infer<typeof userDataSchema>) => {
-        console.log(value);
+        const update = () => {
+          const userUpdate = updateUser(userData?.id as string, value);
+
+          if (!userUpdate) {
+                 toast({
+            title: "Update",
+           description: "opps, something went wrong",
+          variant: "destructive"
+       });
+          }
+
+     toast({
+        title: "Update",
+       description: "user updated",
+   })
+   navigate(0);
+        }
+        update();
       }
 
       const onChangePermission = async (subAccountId: string, value: boolean, permisssionId: string | undefined) => {

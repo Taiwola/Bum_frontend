@@ -1,6 +1,5 @@
 import { useToast } from "./components/ui/use-toast"
 import { useNavigate } from "react-router-dom"
-import { loggingUserOut } from "@/lib/queries"
 import { useMutation } from "react-query";
 import { logOut } from "@/api/auth/route";
 
@@ -21,7 +20,7 @@ export default function LogoutButton({}: Props) {
            onMutate.mutate()
             toast({
                    title: 'Success',
-                description: 'uSER LOGGED OUT',
+                description: 'Logging out',
                  });
                  sessionStorage.removeItem('token');
                  localStorage.removeItem('vite-ui-theme');
