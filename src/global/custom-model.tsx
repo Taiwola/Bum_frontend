@@ -13,7 +13,7 @@ export default function CustomModel({children, defaultOpen, subheading, title}: 
     const {isOpen, setClose} = useModal()
   return (
     <Dialog open={isOpen || defaultOpen} onOpenChange={setClose}>
-        <DialogContent className="overflow-y-scroll md:max-h-[550px] h-screen bg-card w-full">
+        <DialogContent className="overflow-y-scroll rounded md:max-h-[550px] h-screen bg-card w-full">
             <DialogHeader className="pt-8 text-left">
                 <DialogTitle className="text-2xl font-bold">
                     {title}

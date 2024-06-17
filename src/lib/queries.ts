@@ -1,13 +1,17 @@
 import { get_agency } from "@/api/agency/route";
 import { logOut, verifyUser } from "@/api/auth/route";
-import { get_all_notification } from "@/api/notifications/route";
+import { createNotification, get_all_notification } from "@/api/notifications/route";
 import { get_all_subaccount, get_subaccount } from "@/api/subaccount/route";
 import { delete_user, get_user, update_user } from "@/api/user/route";
 import { userDataType } from "@/form/userDetails";
 import { AgencyType, Notification, PermissionsType, SubAccountType, UserType } from "@/types/types";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-// import { useToast } from "@/component/components/ui/use-toast";
+import { useToast } from "@/component/components/ui/use-toast";
 
+
+export interface NotificationInterface {
+    message:string, type:string, subAccountId:string
+}
 
 
 export const getAuthUserDetails = () => {
@@ -167,3 +171,45 @@ export const updateUser = async (userId: string, value: userDataType) => {
 
     return true;
 } 
+
+export const createNotifications = async (notifiactionValue: NotificationInterface) => {
+    const {toast} = useToast();
+    const onMutate = useMutation("createNotification", createNotification, {
+        onSuccess: () =>{ toast({
+            title: "Notification created",
+            description: "Notification created successfully"
+        })},
+        onError: () => {
+            toast({
+                title: "Notification creation failed",
+                description: "Something went wrong",
+                variant: "destructive"
+            })
+        }
+    });
+
+
+   onMutate.mutate(notifiactionValue);
+}
+
+export const useCreateNotification = () => {
+    const { toast } = useToast();
+  
+    const mutation = useMutation(createNotification, {
+      onSuccess: () => {
+        toast({
+          title: "Notification created",
+          description: "Notification created successfully"
+        });
+      },
+      onError: () => {
+        toast({
+          title: "Notification creation failed",
+          description: "Something went wrong",
+          variant: "destructive"
+        });
+      }
+    });
+  
+    return mutation;
+  };

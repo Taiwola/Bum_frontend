@@ -24,7 +24,11 @@ export default function Sidebar({id, type}: Props) {
 
     if (!details) return null
 
-    let sideBarLogo = data.user?.agency.agencyLogo || defaultimage;
+    const subAccount = data.user.agency.subAccounts.find((sub) => sub.id === id)
+
+    let sideBarLogo = data.user?.agency.agencyLogo || subAccount?.subAccountLogo as string;
+    
+    // console.log(subAccount);
 
     
     if (!isWhiteLabelAgency) {
@@ -33,14 +37,13 @@ export default function Sidebar({id, type}: Props) {
         }
     }
 
-    const sideBarOptions = type === 'agency' ? agencyData?.sidebarOptions || [] : data.user?.agency.subAccounts.find((sub) => sub.id === 'id')?.sidebarOptions || [];
-   
+    const sideBarOptions = type === 'agency' ? agencyData?.sidebarOptions || [] : subAccount?.sidebarOptions || [];
+
     const subAccounts = data.user?.agency?.subAccounts?.filter((subaccount) =>
         data.user.permissions.find(permission =>
             permission.subAccountId === subaccount.id && permission.access
         )
     ) || [];
-    
 
   return (
     <>

@@ -82,12 +82,12 @@ const SubAccountDetails: React.FC<SubAccountDetailsProps> = ({agencyDetails, det
     }, [details]);
 
     const submit = (formData: SubAccountTypeSchema) => {
-        console.log(formData);
         onMutation.mutate(formData);
         toast({
             title: 'Updating agency details',
             description: 'Please wait while we update your agency details',
-        })
+        });
+        window.location.reload();
     }
 
 

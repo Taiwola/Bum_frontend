@@ -14,6 +14,15 @@ import Billing from "./pages/billing";
 import Settings from "./pages/settings";
 import Launchpad from "./pages/launchpad";
 import Subaccount from "./pages/subaccount";
+import SubAccountLayout from "./layout/subAccountLayout";
+import SubSetting from "./pages/subaccount/setting";
+import Media from "./pages/subaccount/media";
+import Funnel from "./pages/subaccount/funnel";
+import SubLaunchpad from "./pages/subaccount/launchpad";
+import Automation from "./pages/subaccount/automation";
+import Pipelines from "./pages/subaccount/pipelines";
+import Contacts from "./pages/subaccount/contacts";
+import SubDashboard from "./pages/subaccount/dashboard";
 
 function App() {
   const data = getAuthUserDetails();
@@ -86,10 +95,91 @@ function App() {
           <Route
           path="/subaccount/:Id"
           element={
-            <Subaccount />
+            <SubAccountLayout>
+              <Subaccount />
+            </SubAccountLayout>
           }
           />
           
+          <Route
+          path="/subaccount/:Id/settings"
+          element={
+            <SubAccountLayout>
+              <SubSetting />
+            </SubAccountLayout>
+          }
+          />
+
+          <Route
+          path="/subaccount/:Id/media"
+          element={
+            <SubAccountLayout>
+              <Media />
+            </SubAccountLayout>
+          }
+          />
+
+          <Route
+          path="/subaccount/:Id/funnels"
+          element={
+            <SubAccountLayout>
+              <Funnel />
+            </SubAccountLayout>
+          }
+          />
+          
+          <Route
+          path="/subaccount/:Id/launchpad"
+          element={
+            <SubAccountLayout>
+              <SubLaunchpad />
+            </SubAccountLayout>
+          }
+          />
+
+          <Route
+          path="/subaccount/:Id/media"
+          element={
+            <SubAccountLayout>
+              <Media />
+            </SubAccountLayout>
+          }
+          />
+
+          <Route
+          path="/subaccount/:Id/automations"
+          element={
+            <SubAccountLayout>
+              <Automation />
+            </SubAccountLayout>
+          }
+          />
+          <Route
+          path="/subaccount/:Id/pipelines"
+          element={
+            <SubAccountLayout>
+              <Pipelines />
+            </SubAccountLayout>
+          }
+          />
+
+        <Route
+          path="/subaccount/:Id/contacts"
+          element={
+            <SubAccountLayout>
+              <Contacts />
+            </SubAccountLayout>
+          }
+          />
+
+          <Route
+          path="/subaccount/:Id/dashboard"
+          element={
+            <SubAccountLayout>
+              <SubDashboard />
+            </SubAccountLayout>
+          }
+          />
         </Route>
     </Routes>
     </BrowserRouter>

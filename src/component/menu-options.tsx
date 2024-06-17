@@ -114,7 +114,7 @@ export default function MenuOptions({defaultOpen, subAccounts, sideBarOpts,sideB
                         : 
                         (
                           <SheetClose>
-                        <Link to={`agency/${user?.agency?.id}`} className="flex gap-4 w-full h-full">
+                        <Link to={`/agency/${user?.agency?.id}`} className="flex gap-4 w-full h-full">
                           <div className="relative w-16">
                             <img src={user?.agency?.agencyLogo} alt="agency logo" className="rounded-md object-contain" />
                           </div>
@@ -135,21 +135,21 @@ export default function MenuOptions({defaultOpen, subAccounts, sideBarOpts,sideB
                       {!!subAccounts ? subAccounts.map((subaccout) => (
                        <CommandItem key={subaccout.id}>
                            {defaultOpen ? 
-                        (<Link to={`subaccount/${subaccout.id}`} className="flex gap-4 w-full h-full">
+                        (<Link to={`/subaccount/${subaccout.id}`} className="flex gap-4 w-full h-full">
                           <div className="relative w-16">
                             <img src={subaccout.subAccountLogo} alt="agency logo" className="rounded-md object-contain" />
                           </div>
 
                           <div className="flex flex-col flex-1">
                             {subaccout.name}
-                            <span className="text-muted-foreground">{user?.agency?.address}</span>
+                            <span className="text-muted-foreground">{subaccout.address}</span>
                           </div>
 
                         </Link>) 
                         : 
                         (
                           <SheetClose>
-                        <Link to={`subaccount/${subaccout.id}`} className="flex gap-4 w-full h-full">
+                        <Link to={`/subaccount/${subaccout.id}`} className="flex gap-4 w-full h-full">
                           <div className="relative w-16">
                             <img src={subaccout.subAccountLogo} alt="agency logo" className="rounded-md object-contain" />
                           </div>
