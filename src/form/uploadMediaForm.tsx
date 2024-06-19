@@ -1,8 +1,11 @@
+import { Button } from "@/component/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/component/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/component/components/ui/form";
 import { Input } from "@/component/components/ui/input";
 import { useToast } from "@/component/components/ui/use-toast";
+import Fileuploader from "@/global/file-uploader";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 
@@ -11,19 +14,23 @@ type Props = {
 }
 
 const mediaSchema = z.object({
-    link: z.string().min(1, {message: "Media file is required"}),
-    name: z.string().min(1, {message: "Name is required"})
+    url: z.string().min(1, {message: "Url is required"}),
+    title: z.string().min(1, {message: "Title is required"}),
+    description: z.string().min(1, {message: "Description is required"})
 })
 
 export default function UploadMediaForm({subAccountId}: Props) {
     const {toast} = useToast();
+    const [mediaUrl] = useState<string>(() => 
+        sessionStorage.getItem('media') || ''
+    )
 
     const form = useForm<z.infer<typeof mediaSchema>>({
         resolver: zodResolver(mediaSchema),
         mode: 'onSubmit',
         defaultValues: {
-            name: '',
-            link: ''
+            title: '',
+            url: mediaUrl
         }
     });
 
@@ -48,11 +55,12 @@ export default function UploadMediaForm({subAccountId}: Props) {
                 Please enter details for your file
             </CardDescription>
             <CardContent>
+            <Fileuploader logo="media" />
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(submit)}>
                         <FormField
                         control={form.control}
-                        name="name"
+                        name="title"
                         render={({field}) => (
                             <FormItem className="flex-1">
                                 <FormLabel>File Name</FormLabel>
@@ -65,6 +73,27 @@ export default function UploadMediaForm({subAccountId}: Props) {
                             </FormItem>
                         )}
                         />
+
+                        <FormField
+                        control={form.control}
+                        name="description"
+                        render={({field}) => (
+                            <FormItem className="flex-1">
+                                <FormLabel>File Description</FormLabel>
+                                <FormControl>
+                                    <Input 
+                                    placeholder="Enter a description"
+                                    {...field}
+                                    />
+                                </FormControl>
+                            </FormItem>
+                        )}
+                        />
+
+                        <div className="mt-5 mb-5">
+                        <Input type="text" value={mediaUrl} placeholder="upload" {...form.register("url")} />
+                        </div>
+                        <Button className="bg-bodyTheme-default rounded font-bold">Submit</Button>
                     </form>
                 </Form>
             </CardContent>

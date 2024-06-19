@@ -8,11 +8,10 @@ import { useMutation } from "react-query";
 import { uploadLogo } from "@/api/uploadthing/route";
 import { useToast } from "@/component/components/ui/use-toast";
 import { ToastAction } from "@/component/components/ui/toast";
-import { getAgencydetails } from "@/lib/queries";
 
 type Props = {
   agencyId?: string | undefined;
-  logo: "subaccountLogo" | "agencyLogo" | "profileImage";
+  logo: "subaccountLogo" | "agencyLogo" | "profileImage" | "media";
   name?: string
 };
 

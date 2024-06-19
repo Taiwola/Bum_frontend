@@ -10,6 +10,7 @@ import { getAgencydetails } from '@/lib/queries';
 import { userLoggedIn } from '@/lib/verifyUser';
 import { ThemeProvider } from '@/providers/theme-provider';
 import { Notification, UserType } from '@/types/types';
+import Loading from '@/global/loading';
 
 type Props = {
   children: React.ReactNode;
@@ -18,7 +19,11 @@ type Props = {
 export default function SubAccountLayout({ children }: Props) {
   const navigate = useNavigate();
   const { Id } = useParams();
-  const { data: userData, isLoading: isUserLoading } = userLoggedIn();
+  const { data: userData, isLoading: isUserLoading, isError } = userLoggedIn();
+
+  console.log(userData)
+  console.log('is loading', isUserLoading)
+  console.log("is error", isError);
 
   useEffect(() => {
     if (!isUserLoading && !userData) {
@@ -26,12 +31,16 @@ export default function SubAccountLayout({ children }: Props) {
     }
   }, [userData, isUserLoading, navigate]);
 
+  if (isError) {
+    return navigate('/'); 
+  }
+
   if (isUserLoading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   if (!userData) {
-    return null; // Redirect is handled in useEffect, return null to prevent further rendering
+    return navigate('/'); // Redirect is handled in useEffect, return null to prevent further rendering
   }
 
   if (!userData.agencyId) {
@@ -70,11 +79,11 @@ export default function SubAccountLayout({ children }: Props) {
   );
 
   if (isUserLoading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   if (isNotificationsError) {
-    return <div>Error loading notifications</div>;
+    return [];
   }
 
   let allNoti: Notification[] = [];

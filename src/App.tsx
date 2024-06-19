@@ -23,6 +23,7 @@ import Automation from "./pages/subaccount/automation";
 import Pipelines from "./pages/subaccount/pipelines";
 import Contacts from "./pages/subaccount/contacts";
 import SubDashboard from "./pages/subaccount/dashboard";
+import PipelinePage from "./pages/subaccount/pipelineId";
 
 function App() {
   const data = getAuthUserDetails();
@@ -66,7 +67,7 @@ function App() {
         }
           />
 
-<Route
+          <Route
           path="/agency/:Id/billing"
           element={
             <LayoutDash params={{agencyId: data.user?.agencyId || ""}}>
@@ -74,7 +75,7 @@ function App() {
             </LayoutDash>
         }
           />
-<Route
+          <Route
           path="/agency/:Id/launchpad"
           element={
             <LayoutDash params={{agencyId: data.user?.agencyId || ""}}>
@@ -155,11 +156,18 @@ function App() {
           }
           />
           <Route
-          path="/subaccount/:Id/pipelines"
+          path="/subaccount/:Id/pipelines/"
           element={
             <SubAccountLayout>
               <Pipelines />
             </SubAccountLayout>
+          }
+          />
+
+          <Route
+          path={`/subaccount/:Id/pipelines/:pipelineId`}
+          element= {
+              <PipelinePage />
           }
           />
 

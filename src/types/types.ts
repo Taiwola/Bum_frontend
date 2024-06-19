@@ -392,4 +392,13 @@ export type AgencyType = {
     user: UserType
   }
 
+  export type TicketAndTags = Ticket & {
+    tags: Tag[],
+    assigned: UserType | null,
+    Customer: Contact | null
+  }
+
+  export type LanesDetails = Lane & {
+    Tickets: TicketAndTags[]
+  }
   

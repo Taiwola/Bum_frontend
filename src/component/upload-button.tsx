@@ -1,5 +1,4 @@
 import { useModal } from '@/providers/model-provider-file'
-import React from 'react'
 import { Button } from './components/ui/button'
 import CustomModel from '@/global/custom-model'
 import UploadMediaForm from '@/form/uploadMediaForm'

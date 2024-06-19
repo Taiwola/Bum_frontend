@@ -28,7 +28,7 @@ export const getAuthUserDetails = () => {
     return {
         user,
         isLoading,
-        isError
+        isError,
     };
 }
 
