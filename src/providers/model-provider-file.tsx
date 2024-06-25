@@ -1,11 +1,12 @@
-import { AgencyType, Contact, UserType } from '@/types/types';
+import { AgencyType, Contact, Ticket, UserType } from '@/types/types';
 import React, { createContext, useContext, useEffect, useState } from 'react'
 
 
 export type ModelData = {
     user?: UserType,
     contact?: Contact,
-    agency?: AgencyType
+    agency?: AgencyType,
+    ticket?: Ticket[] | []
 }
 
 type ModelContextType = {

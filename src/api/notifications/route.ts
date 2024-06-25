@@ -23,7 +23,7 @@ export const get_all_notification = async () => {
 }
 
 export const createNotification = async (notifiactionValue: NotificationInterface) => {
-    const token = sessionStorage.getItem('tokne');
+    const token = sessionStorage.getItem('token');
 
     const res = await fetch(`${API_BASE_URL}/api/notification`, {
         method: "POST",

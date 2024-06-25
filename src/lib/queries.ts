@@ -7,6 +7,7 @@ import { userDataType } from "@/form/userDetails";
 import { AgencyType, Notification, PermissionsType, SubAccountType, UserType } from "@/types/types";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useToast } from "@/component/components/ui/use-toast";
+import { get_one_user_permissions } from "@/api/permission/permission.route.";
 
 
 export interface NotificationInterface {
@@ -63,8 +64,17 @@ export const getAgencydetails = (agencyId: string):  AgencyType | null  => {
 
 
 export const getUserPermission = (userId: string) => {
-    console.log(userId);
-return null;
+ const {data, isError, error} = useQuery("getOnePermission", () => get_one_user_permissions(userId), {
+    retry: false
+ });
+
+ if (isError) return null;
+
+ if (error) {
+    console.log(error);
+ }
+
+ return data;
 }
 
 export const changeUserPermission = async (permissionId: string, userEmail: string, subAccountId: string, value:boolean, type: string) => {

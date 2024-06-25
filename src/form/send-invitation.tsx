@@ -29,6 +29,9 @@ import { Button } from '@/component/components/ui/button'
 import Loading from '../global/loading'
 //import { saveActivityLogsNotification, sendInvitation } from '@/lib/queries'
 import { useToast } from '@/component/components/ui/use-toast'
+import { useMutation } from 'react-query'
+import { createInvitations } from '@/api/invitations/route'
+import { RoleEnum } from '@/types/types'
 
 interface SendInvitationProps {
   agencyId: string
@@ -43,6 +46,25 @@ const SendInvitation: React.FC<SendInvitationProps> = ({ agencyId }) => {
     role: z.enum(['AGENCY_ADMIN', 'SUBACCOUNT_USER', 'SUBACCOUNT_GUEST']),
   })
 
+  const onMutation = useMutation(createInvitations, {
+    onSuccess: () => {
+        toast({
+        title: 'Success',
+        description: 'Created and sent invitation',
+      });
+      window.location.reload();
+    },
+    onError: () => {
+      toast({
+            variant: 'destructive',
+            title: 'Oppse!',
+            description: 'Could not send invitation',
+          })
+
+          form.reset();
+    }
+  })
+
   const form = useForm<z.infer<typeof userDataSchema>>({
     resolver: zodResolver(userDataSchema),
     mode: 'onChange',
@@ -53,25 +75,21 @@ const SendInvitation: React.FC<SendInvitationProps> = ({ agencyId }) => {
   })
 
   const onSubmit = async (values: z.infer<typeof userDataSchema>) => {
-    // try {
-    //   const res = await sendInvitation(values.role, values.email, agencyId)
-    //   await saveActivityLogsNotification({
-    //     agencyId: agencyId,
-    //     description: `Invited ${res.email}`,
-    //     subaccountId: undefined,
-    //   })
-    //   toast({
-    //     title: 'Success',
-    //     description: 'Created and sent invitation',
-    //   })
-    // } catch (error) {
-    //   console.log(error)
-    //   toast({
-    //     variant: 'destructive',
-    //     title: 'Oppse!',
-    //     description: 'Could not send invitation',
-    //   })
-    // }
+    try {
+      const options = {
+        email: values.email,
+        role: values.role as RoleEnum,
+        agencyId: agencyId
+      }
+      onMutation.mutate(options)
+    } catch (error) {
+      console.log(error)
+      toast({
+        variant: 'destructive',
+        title: 'Oppse!',
+        description: 'Could not send invitation',
+      })
+    }
   }
 
   return (

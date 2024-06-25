@@ -19,11 +19,10 @@ export default function Agency() {
     }
 
     const data = getAuthUserDetails();
-
    
     if (data.user?.agencyId) {
         if (data.user?.role === RoleEnum.SUBACCOUNT_USER || data.user?.role === RoleEnum.SUBACCOUNT_GUEST) {
-            return <Navigate to="/agency/subaccount" replace={true} />;
+            return <Navigate to={`/agency/${data.user.id}/subaccount/`} replace={true} />;
         } else if (data.user?.role === RoleEnum.AGENCY_OWNER || data.user?.role === RoleEnum.AGENCY_ADMIN) {
             return <Navigate to={`/agency/${data.user.agencyId}`} replace={true} />;
         }

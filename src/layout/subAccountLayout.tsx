@@ -21,9 +21,6 @@ export default function SubAccountLayout({ children }: Props) {
   const { Id } = useParams();
   const { data: userData, isLoading: isUserLoading, isError } = userLoggedIn();
 
-  console.log(userData)
-  console.log('is loading', isUserLoading)
-  console.log("is error", isError);
 
   useEffect(() => {
     if (!isUserLoading && !userData) {

@@ -24,6 +24,8 @@ import Pipelines from "./pages/subaccount/pipelines";
 import Contacts from "./pages/subaccount/contacts";
 import SubDashboard from "./pages/subaccount/dashboard";
 import PipelinePage from "./pages/subaccount/pipelineId";
+import PipelinesLayout from "./layout/pipelines.layout";
+import SubAccountPage from "./pages/subAccountPage";
 
 function App() {
   const data = getAuthUserDetails();
@@ -167,7 +169,19 @@ function App() {
           <Route
           path={`/subaccount/:Id/pipelines/:pipelineId`}
           element= {
+            <SubAccountLayout>
+              <PipelinesLayout>
               <PipelinePage />
+            </PipelinesLayout>
+            </SubAccountLayout>
+            
+          }
+          />
+
+<Route
+          path="/agency/:Id/subaccount"
+          element= {
+            <SubAccountPage />
           }
           />
 

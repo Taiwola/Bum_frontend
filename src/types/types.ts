@@ -138,8 +138,9 @@ export type AgencyType = {
   // Type for Ticket
   export type Ticket = {
     id: string;
-    title: string;
+    name: string;
     description: string;
+    value: number;
     isClosed: boolean;
     createdAt: Date;
     updatedAt: Date;
@@ -151,6 +152,7 @@ export type AgencyType = {
     assignedUser: UserType;
     lane: Lane;
     tags: Tag[];
+    contact: Contact
   }
 
   export enum TriggerTypes {
@@ -222,6 +224,7 @@ export type AgencyType = {
     subAccount: SubAccountType;
     subAccountId: string;
     media: Media[];
+    tickets: Ticket[]
   }
   
   // Type for Media
@@ -393,9 +396,9 @@ export type AgencyType = {
   }
 
   export type TicketAndTags = Ticket & {
-    tags: Tag[],
-    assigned: UserType | null,
-    Customer: Contact | null
+    tags?: Tag[],
+    assigned?: UserType | null,
+    Customer?: Contact | null
   }
 
   export type LanesDetails = Lane & {

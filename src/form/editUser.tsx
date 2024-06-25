@@ -1,12 +1,12 @@
 import { useToast } from '@/component/components/ui/use-toast';
 import { changeUserPermission, getAuthUserDetails, getUserPermission, updateUser } from '@/lib/queries';
 import { useModal } from '@/providers/model-provider-file';
-import { AuthUserWithAgencySideBarOptionSubAccount, RoleEnum, SubAccountType, UserType, UserWithPermissionAndSubccount } from '@/types/types'
+import { AuthUserWithAgencySideBarOptionSubAccount, PermissionsType, RoleEnum, SubAccountType, UserType, UserWithPermissionAndSubccount } from '@/types/types'
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
-import { string, z } from 'zod';
-import { useMutation } from 'react-query';
+import {  z } from 'zod';
+import { useMutation, useQuery } from 'react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/component/components/ui/card';
 import { Label } from '@radix-ui/react-dropdown-menu';
 import Fileuploader from '@/global/file-uploader';
@@ -17,7 +17,9 @@ import Loading from '@/global/loading';
 import { Separator } from '@/component/components/ui/separator';
 import ImageData from '@/component/imageData';
 import { Switch } from '@/component/components/ui/switch';
-import { useNavigate } from 'react-router-dom';
+import { userLoggedIn } from '@/lib/verifyUser';
+import { create_permission, get_one_user_permissions } from '@/api/permission/permission.route.';
+import { access } from 'fs';
 
 type Props = {
     type: "agency" | "subaccount",
@@ -29,35 +31,31 @@ type Props = {
 // TODO: WRITE THE BACKEND CODE TO CHANGE PERMISSION, WRITE THE BACKEND CODE TO EDIT THE USER DETAILS AND WRITE THE BACKEND CODE FOR NOTIFICATION AND WRITE THE ROUTE AND CONSUME THEM FROM THE BACKEND
 
 export default function EditUserDetails({type, id, subaccount, userData}: Props) {
-    const [subAccountPermission, setSubAccountPermission] = useState<UserWithPermissionAndSubccount | null>(null);
-    const {data, setClose} = useModal();
+    const { setClose} = useModal();
     const [roleState, setRoleState] = useState("");
     const [loadingPermission, setLoadingPermission] = useState(false);
-    const [authUserData, setAuthUserData] = useState<AuthUserWithAgencySideBarOptionSubAccount | null>(null)
     const {toast} = useToast();
-    const [profileImage, setProfileImage] = useState<string>(() => 
-      sessionStorage.getItem("profileImage") || ""
+    const [profileImage] = useState<string>(() => 
+      userData?.avatarUrl || sessionStorage.getItem("profileImage") || ""
     );
     const [role, setRole] = useState('');
-    
-    
-    
-    useEffect(() => {
-        if (data.user) {
-            const fetchDetails = async () => {
-                const {user} = getAuthUserDetails(); // Type alias for response
-                if (user) {
-                    const authUser = {
-                        user
-                    }
-                  setAuthUserData(authUser);
-                }
-            }
-            fetchDetails();
-            }
-            }, [data]);
-            
-        
+    const authUser = userLoggedIn();
+
+    const onMutation = useMutation(create_permission, {
+      onSuccess: () => {
+        toast({
+          title: "Permission",
+          description: "Permission created"
+        })
+      },
+      onError: () => {
+        toast( {
+          title: "PermissionError",
+          description: "Something went wrong, try after a few minutes",
+          variant: "destructive"
+        })
+      }
+    })
 
     const userDataSchema = z.object({
         name: z.string().min(1),
@@ -75,10 +73,10 @@ export default function EditUserDetails({type, id, subaccount, userData}: Props)
         resolver: zodResolver(userDataSchema),
         mode: "onChange",
         defaultValues: {
-            name: userData ? userData.name : data?.user?.name,
-      email: userData ? userData.email : data?.user?.email,
-      avatarUrl: userData ? (userData?.avatarUrl as string) ?? undefined :  (data?.user?.avatarUrl as string) ?? undefined,
-      role: userData ? userData.role : data?.user?.role,
+            name: userData ? userData.name : "",
+      email: userData ? userData.email: "" ,
+      avatarUrl: userData?.avatarUrl || profileImage || "",
+      role: userData && userData.role ,
         }
       });
 
@@ -91,18 +89,18 @@ export default function EditUserDetails({type, id, subaccount, userData}: Props)
         setRole(value);
       };
 
-      useEffect(() => {
-        if (!data.user) return;
-            const getPermisssion = async () => {
-                if (!data.user) return;
-                const permission = await getUserPermission(data.user?.id);
-                setSubAccountPermission(permission);
-            }
-            getPermisssion();
-      }, [userData, data]);
-
+      // useEffect(() => {
+      //   if (!authUser.data) return;
+      //   const getPermisssion = async () => {
+      //     if (!authUser.data) return;
+      //           setSubAccountPermission(data);
+      //       }
+      //       getPermisssion();
+      // }, [userData, data]);
 
       const submit = (value: z.infer<typeof userDataSchema>) => {
+
+        console.log(value);
         const update = () => {
           const userUpdate = updateUser(userData?.id as string, value);
 
@@ -124,22 +122,40 @@ export default function EditUserDetails({type, id, subaccount, userData}: Props)
       }
 
 
-      const onChangePermission = async (subAccountId: string, value: boolean, permisssionId: string | undefined) => {
+      const onChangePermission = async (subAccountId: string, value: boolean, permissionId: string | undefined) => {
         if (!userData?.email) return;
-        if (!permisssionId) return
         setLoadingPermission(true);
-        const response = await changeUserPermission(permisssionId as string, data.user?.email as string, subAccountId, value, type);
-
-        if (!response) {
-          toast({
-            title: 'Error',
-            description: 'opps',
-            variant: "destructive"
-          });
-          return
+        try {
+            if (!permissionId) {
+                const options = {
+                    email: userData.email,
+                    access: value,
+                    subAccountId: subAccountId as string,
+                    userId: userData.id as string
+                };
+                await onMutation.mutateAsync(options);
+            } else {
+              console.log(value);
+                const response = await changeUserPermission(permissionId as string, userData?.email as string, subAccountId, value, type);
+                if (!response) {
+                    throw new Error('Permission change failed');
+                }
+            }
+            toast({
+                title: 'Success',
+                description: 'Permission updated',
+            });
+        } catch (error) {
+            console.error("Permission Change Error:", error);
+            toast({
+                title: 'Error',
+                description: 'Oops, something went wrong',
+                variant: "destructive"
+            });
         }
         setLoadingPermission(false);
-      }
+    };
+    
     
   return (
     <Card className="w-full">
@@ -155,7 +171,7 @@ export default function EditUserDetails({type, id, subaccount, userData}: Props)
             :(<Fileuploader logo='profileImage' agencyId={userData?.agencyId as string}  />)}
           </div>
         <form onSubmit={handleSubmit(submit)} className='space-y-4'>
-        <Input type="text" value={profileImage as string}  {...register("avatarUrl")} className="hidden"/>
+        <Input type="text"  {...register("avatarUrl")} className="hidden"/>
                     {errors.avatarUrl ? (
                                 <span className="text-sm text-red-500 text-muted-foregrounduted">{errors?.avatarUrl.message}</span>
                             ) : ""}
@@ -204,8 +220,8 @@ export default function EditUserDetails({type, id, subaccount, userData}: Props)
             </Button>
 
             {
-              userData?.role === RoleEnum.AGENCY_OWNER && (
-                <div>
+              authUser.data?.role === RoleEnum.AGENCY_OWNER && (
+                <div key={userData?.id}>
                   <Separator className='my-4' />
                   <Label className='font-normal mb-3'>User Permissions</Label>
                   <p className='mb-4 text-muted-foreground'> You can give Sub Account access to team member by turning on
@@ -215,18 +231,18 @@ export default function EditUserDetails({type, id, subaccount, userData}: Props)
                   {/* TODO: WRITE THE PERMISSION BACKEND CODE, TO CREATE PERMISSION FOR THE USERS */}
                   <div className='flex flex-col gap-4'>
                     {subaccount?.map((accounts) => {
-                     const subAccountPermissions = accounts.permissions?.find((p) => p.subAccountId === accounts.id)
+                     const subAccountPermissions = userData?.permissions?.find((p) => p.subAccountId === accounts.id)
                      
                      return <>
                      <div key={subAccountPermissions?.id} className='flex items-center justify-between'>
                       <div>
                         <p>{accounts.name}</p>
-                        <p>{subAccountPermissions?.email}</p>
+                        <p>{userData?.email}</p>
                         </div> 
                         <Switch 
                         disabled={loadingPermission} 
                         checked={subAccountPermissions?.access} 
-                        onCheckedChange={(permission) => {onChangePermission(accounts.id, permission, subAccountPermissions?.id)} }
+                        onCheckedChange={(value) => {onChangePermission(accounts.id, value, subAccountPermissions?.id)} }
                         />
 
                      </div>

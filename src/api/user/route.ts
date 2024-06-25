@@ -25,6 +25,28 @@ export const get_team_members = async (agencyId: string) => {
     return response.data;
 }
 
+export const get_subacc_team_members = async (subaccountId: string) => {
+    const token = sessionStorage.getItem("token");
+
+    const res = await fetch(`${API_BASE_URL}/api/user/team/subaccount/${subaccountId}`,{
+        method: 'GET',
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        }
+    }
+    );
+
+    if (!res.ok) {
+        console.error("Failed to get team", res.statusText);
+        return null;
+    }
+
+    const response = await res.json();
+
+    return response.data;
+}
+
 export const get_user = async (userId: string) => {
     const token = sessionStorage.getItem("token");
 

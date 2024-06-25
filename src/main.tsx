@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
-import { ThemeProvider } from './providers/theme-provider.jsx'
+// import { ThemeProvider } from './providers/theme-provider.jsx'
 import {Toaster} from "@/component/components/ui/toaster.tsx"
 import { QueryClient, QueryClientProvider } from 'react-query'
 import ModelProvider from './providers/model-provider-file.tsx'
