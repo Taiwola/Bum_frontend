@@ -6,11 +6,18 @@ import TagComponent from "./tagComponent";
 import { PlusCircleIcon, TrashIcon, X } from "lucide-react";
 import { useToast } from "./components/ui/use-toast";
 import { useMutation } from "react-query";
+import { create_tag } from "@/api/tags/tag.route";
 
 type Props = {
     subAccountId: string
     getSelectedTags:  (tags: Tag[]) => void,
     defaultTags: Tag[]
+}
+
+interface ValueInterface {
+  color: string,
+  subAccountId: string,
+  name: string
 }
 
 const TagColors = ['BLUE', 'ORANGE', 'ROSE', 'PURPLE', 'GREEN'] as const;
@@ -21,7 +28,22 @@ export default function TagCreator({defaultTags, getSelectedTags, subAccountId}:
     const [value, setValue] = useState('')
     const [selectedColor, setSelectedColor] = useState('');
     const {toast} = useToast();
-    const onMutation = useMutation();
+    const onMutation = useMutation(create_tag, {
+      onSuccess: () => {
+        toast({
+          title: "Tag",
+          description: 'Tag created successfully',
+          variant: "default"
+        })
+      },
+      onError: () => {
+        toast({
+          title: "Tag",
+          description: 'Tag creation failed',
+          variant: "destructive"
+        })
+      }
+    });
 
     useEffect(() => {
         getSelectedTags(selectTags);
@@ -53,8 +75,8 @@ export default function TagCreator({defaultTags, getSelectedTags, subAccountId}:
         return
       }
 
-      const tagData: TagPartial = {
-        color: selectedColor,
+      const tagData: ValueInterface = {
+        color: selectedColor as string,
         name: value,
         subAccountId: subAccountId,
       }
@@ -62,7 +84,7 @@ export default function TagCreator({defaultTags, getSelectedTags, subAccountId}:
       setTags([...tags, tagData]);
 
       try {
-        
+        onMutation.mutate(tagData);
       } catch (error) {
         console.log(error);
         toast({
