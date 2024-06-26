@@ -9,6 +9,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useToast } from "@/component/components/ui/use-toast";
 import { get_one_user_permissions } from "@/api/permission/permission.route.";
 import { deleteLane } from "@/api/lanes/lane.route";
+import { get_one_tag_where_subacctId } from "@/api/tags/tag.route";
 
 
 export interface NotificationInterface {
@@ -232,4 +233,9 @@ export  const delete_lane = async (laneId: string) => {
       });
 
       return data;
+}
+
+export const getTagWhereSubAccountExist = async (subAccountId: string) => {
+    const data = await get_one_tag_where_subacctId(subAccountId);
+    return data;
 }

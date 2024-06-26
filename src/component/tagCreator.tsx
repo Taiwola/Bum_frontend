@@ -7,6 +7,7 @@ import { PlusCircleIcon, TrashIcon, X } from "lucide-react";
 import { useToast } from "./components/ui/use-toast";
 import { useMutation } from "react-query";
 import { create_tag } from "@/api/tags/tag.route";
+import { getTagWhereSubAccountExist } from "@/lib/queries";
 
 type Props = {
     subAccountId: string
@@ -52,7 +53,14 @@ export default function TagCreator({defaultTags, getSelectedTags, subAccountId}:
 
     useEffect(() => {
       //WIP: GET TAGS FOR WHERE THE SUBACCOUNT ID EXIST 
-    })
+      if (subAccountId) {
+        const fetchData = async () => {
+          const response = await getTagWhereSubAccountExist(subAccountId);
+          if (response) setTags(response);
+        }
+        fetchData();
+      }
+    }, [subAccountId])
 
     const handleDeleteSelection = (tagId: string) => {
         setSelectedTags(selectTags.filter((tag) => tag.id !== tagId));
