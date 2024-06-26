@@ -6,7 +6,7 @@ import TagComponent from "./tagComponent";
 import { PlusCircleIcon, TrashIcon, X } from "lucide-react";
 import { useToast } from "./components/ui/use-toast";
 import { useMutation } from "react-query";
-import { create_tag } from "@/api/tags/tag.route";
+import { create_tag, delete_tag } from "@/api/tags/tag.route";
 import { getTagWhereSubAccountExist } from "@/lib/queries";
 
 type Props = {
@@ -45,6 +45,22 @@ export default function TagCreator({defaultTags, getSelectedTags, subAccountId}:
         })
       }
     });
+
+    const {mutate} = useMutation(delete_tag, {
+      onSuccess: () => {
+        toast({
+          title: 'Deleted tag',
+          description: 'The tag is deleted from your subaccount.',
+        })
+      },
+      onError: () => {
+        toast({
+          title: 'Deleted tag',
+          description: 'Something unexpected happened',
+          variant: "destructive"
+        })
+      }
+    })
 
     useEffect(() => {
         getSelectedTags(selectTags);
@@ -102,13 +118,36 @@ export default function TagCreator({defaultTags, getSelectedTags, subAccountId}:
       }
     }
 
-    const handleDeleteTag = (value: string) => {
-        console.log("DELETEtag")
+    const handleDeleteTag = (tagid: string) => {
+        setTags(tags.filter((tag) => tag.id !== tagid));
+        try {
+          mutate(tagid);
+        } catch (error) {
+          console.log(error)
+          toast({
+            variant: 'destructive',
+            title: 'Could not delete tag',
+          })
+        }
     }
 
-    const handleAddSelections = (value:any) => {
-        console.log("handleselect")
-    }
+    const handleAddSelections = (tag: TagPartial) => {
+      if (tag.id && selectTags.every((t) => t.id !== tag.id)) {
+        const newTag: Tag = {
+          id: tag.id!,
+          name: tag.name!,
+          color: tag.color!,
+          createdAt: tag.createdAt!,
+          updatedAt: tag.updatedAt!,
+          subAccount: tag.subAccount!,
+          subAccountId: tag.subAccountId!,
+          tickets: tag.tickets!
+          // Other properties if any
+        };
+        setSelectedTags([...selectTags, newTag]);
+      }
+    };
+    
   return (
    <AlertDialog>
     <Command className="!bg-transparent">
