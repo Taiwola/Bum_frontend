@@ -1,8 +1,7 @@
 import { useModal } from "@/providers/model-provider-file"
 import { LanesDetails, Pipeline, TicketAndTags } from "@/types/types"
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import {DragDropContext, DropResult, Droppable} from "react-beautiful-dnd";
+import {DragDropContext, Droppable} from "react-beautiful-dnd";
 import { Button } from "./components/ui/button";
 import { Flag, Plus } from "lucide-react";
 import CustomModel from "@/global/custom-model";
@@ -21,7 +20,7 @@ type Props = {
 
 export default function PipelineView({lanes, pipelineDetails, pipelineId, subaccountId}: Props) {
   const {setOpen} = useModal();
-  const navigate = useNavigate();
+
 
   const ticketsFromAllLanes: TicketAndTags[] = []
   lanes?.forEach((item) =>{
@@ -77,7 +76,7 @@ const [allTickets, setAllTickets] = useState(ticketsFromAllLanes);
           >
             <div className="flex mt-4">
               {allLanes?.map((lane, index) => (
-                <>
+
                 <PipelineLane
                 allTickets={allTickets}
                 setAllTickets={setAllTickets}
@@ -88,7 +87,7 @@ const [allTickets, setAllTickets] = useState(ticketsFromAllLanes);
                 pipelineId={pipelineId}
                 tickets={lane.Tickets || []}
                  />
-                </>
+  
               ))}
               {provided.placeholder}
             </div>

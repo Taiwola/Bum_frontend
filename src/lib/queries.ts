@@ -8,6 +8,7 @@ import { AgencyType, Notification, PermissionsType, SubAccountType, UserType } f
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useToast } from "@/component/components/ui/use-toast";
 import { get_one_user_permissions } from "@/api/permission/permission.route.";
+import { deleteLane } from "@/api/lanes/lane.route";
 
 
 export interface NotificationInterface {
@@ -223,3 +224,12 @@ export const useCreateNotification = () => {
   
     return mutation;
   };
+
+
+export  const delete_lane = async (laneId: string) => {
+    const {data} = useQuery("deleteLanes", () => deleteLane(laneId), {
+        retry: false
+      });
+
+      return data;
+}

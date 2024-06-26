@@ -111,6 +111,8 @@ export type AgencyType = {
     subAccount: SubAccountType;
     tickets: Ticket[];
   }
+
+  export interface TagPartial extends Partial<Tag> {}
   
   // Type for Pipeline
   export type Pipeline = {

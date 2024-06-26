@@ -11,6 +11,9 @@ import TicketForm from '@/form/ticketForm'
 import CreateLaneForm from '@/form/createLane'
 import PipelineTicket from '@/form/pipelineTicket'
 import { Badge } from './components/ui/badge'
+import { useMutation } from 'react-query'
+import { deleteLane } from '@/api/lanes/lane.route'
+import { useToast } from './components/ui/use-toast'
 
 interface PipelaneLaneProps {
     setAllTickets: Dispatch<SetStateAction<any>>
@@ -32,11 +35,27 @@ interface PipelaneLaneProps {
     allTickets,
     index,
   }) => { 
-
+    const {toast} = useToast();
     const { setOpen } = useModal()
     const amt = new Intl.NumberFormat(undefined, {
         style: 'currency',
         currency: 'USD',
+      })
+
+      const onMutation = useMutation(deleteLane, {
+        onSuccess: () => {
+          toast({
+            title: "Lane deleted",
+            description: "Lane successfully deleted"
+          });
+          window.location.reload();
+        },
+        onError: () => {
+          toast({
+            title: "Lane Error",
+            description: "Error in deleting lane"
+          });
+        }
       })
 
       const laneAmt = useMemo(() => {
@@ -85,8 +104,13 @@ interface PipelaneLaneProps {
       const handleDelete = () => {
         try {
           // write the code for handle delete and create notifications
+           onMutation.mutate(laneDetails.id)
         } catch (error) {
           console.log(error);
+          toast({
+            title: "Lane Error",
+            description: "Something went wrong, try again later"
+          });
         }
       }
 
