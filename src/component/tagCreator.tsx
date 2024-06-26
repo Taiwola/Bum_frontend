@@ -62,6 +62,8 @@ export default function TagCreator({defaultTags, getSelectedTags, subAccountId}:
       }
     })
 
+    console.log(tags);
+
     useEffect(() => {
         getSelectedTags(selectTags);
     }, [selectTags]);

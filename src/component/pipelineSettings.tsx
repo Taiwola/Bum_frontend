@@ -98,7 +98,7 @@ export default function PipelineSettings({pipelineId, pipelines, subaccountId}: 
             {/* change this to update */}
             <CreatePipelineForm
             subAccountId={subaccountId}
-            defaultData={pipelines.find((p) => p.id === pipelineId)}
+            defaultData={pipelines?.find((p) => p.id === pipelineId)}
             />
         </div>
     </AlertDialog>
