@@ -11,6 +11,7 @@ interface ValueInterface {
     customerId?: string;
     assignedUserId: string;
     tags: Tag[]
+    order: number
 }
 
 export const create_ticket = async (value: ValueInterface) => {

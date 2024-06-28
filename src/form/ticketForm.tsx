@@ -38,6 +38,9 @@ export const TicketFormSchema = z.object({
     }),
 });
 
+
+export type TicketFormSchemaType = z.infer<typeof TicketFormSchema>;
+
 export default function TicketForm({ laneId, subaccountId }: Props) {
   const {toast} = useToast();
     const { data: teamMembers, isLoading } = useQuery(
@@ -126,7 +129,8 @@ export default function TicketForm({ laneId, subaccountId }: Props) {
               ...(contact ? {customerId: contact} : {}),
               tags,
               subAccountId: subaccountId, 
-              laneId: laneId
+              laneId: laneId,
+              order: 0
             }
             console.log(options);
             onMutation.mutate(options);
