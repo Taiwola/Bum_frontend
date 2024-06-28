@@ -1,13 +1,16 @@
+import { Tag } from "@/types/types";
+
 const API_BASE_URL = "http://localhost:4000";
 
 interface ValueInterface {
-    title: string,
-    description: string,
-    isClosed: boolean,
+    name: string,
+    description?: string,
+    //isClosed?: boolean,
     subAccountId: string;
     laneId: string;
-    customerId: string;
+    customerId?: string;
     assignedUserId: string;
+    tags: Tag[]
 }
 
 export const create_ticket = async (value: ValueInterface) => {

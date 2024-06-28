@@ -1,3 +1,4 @@
+import { create_ticket } from '@/api/ticket/ticket.route';
 import { get_subacc_team_members } from '@/api/user/route';
 import { Avatar, AvatarFallback, AvatarImage } from '@/component/components/ui/avatar';
 import { Button } from '@/component/components/ui/button';
@@ -8,6 +9,7 @@ import { Input } from '@/component/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/component/components/ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/component/components/ui/select';
 import { Textarea } from '@/component/components/ui/textarea';
+import { useToast } from '@/component/components/ui/use-toast';
 import TagCreator from '@/component/tagCreator';
 import Loading from '@/global/loading';
 import { cn } from '@/lib/utils';
@@ -17,7 +19,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { CheckIcon, ChevronsUpDownIcon, User2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { z } from 'zod';
 
 type Props = {
@@ -37,6 +39,7 @@ export const TicketFormSchema = z.object({
 });
 
 export default function TicketForm({ laneId, subaccountId }: Props) {
+  const {toast} = useToast();
     const { data: teamMembers, isLoading } = useQuery(
         ['getSubAccTeamMembers', subaccountId],
         () => get_subacc_team_members(subaccountId),
@@ -69,6 +72,22 @@ export default function TicketForm({ laneId, subaccountId }: Props) {
 
     const saveTimerRef = useRef<ReturnType<typeof setTimeout>>();
 
+    const onMutation = useMutation(create_ticket, {
+      onSuccess: () => {
+        toast({
+          title: "Ticket",
+          description: "Ticket created"
+        })
+      },
+      onError: () => {
+        toast({
+          title: "Ticket",
+          description: "Something went wrong",
+          variant: "destructive"
+        })
+      }
+    })
+
     useEffect(() => {
         if (teamMembers) {
             setAllTeamMembers(teamMembers);
@@ -95,12 +114,22 @@ export default function TicketForm({ laneId, subaccountId }: Props) {
         fetchData();
     }, [defaultData]);
 
-    const submit = () => {
+    const submit = (value: z.infer<typeof TicketFormSchema>) => {
         // Your submit logic here
         if (!laneId) return;
 
         try {
             // Your submit logic here
+            const options = {
+              ...value,
+              assignedUserId: assignedTo,
+              ...(contact ? {customerId: contact} : {}),
+              tags,
+              subAccountId: subaccountId, 
+              laneId: laneId
+            }
+            console.log(options);
+            onMutation.mutate(options);
         } catch (error) {
             console.log(error);
         }
@@ -122,7 +151,7 @@ export default function TicketForm({ laneId, subaccountId }: Props) {
             className="flex flex-col gap-4"
           >
             <FormField
-              disabled={isLoading}
+              disabled={loading}
               control={form.control}
               name="name"
               render={({ field }) => (
@@ -139,7 +168,7 @@ export default function TicketForm({ laneId, subaccountId }: Props) {
               )}
             />
             <FormField
-              disabled={isLoading}
+              disabled={loading}
               control={form.control}
               name="description"
               render={({ field }) => (
@@ -156,7 +185,7 @@ export default function TicketForm({ laneId, subaccountId }: Props) {
               )}
             />
             <FormField
-              disabled={isLoading}
+              disabled={loading}
               control={form.control}
               name="value"
               render={({ field }) => (

@@ -1,7 +1,7 @@
 import { useModal } from "@/providers/model-provider-file"
-import { LanesDetails, Pipeline, TicketAndTags } from "@/types/types"
+import { Lane, LanesDetails, Pipeline, Ticket, TicketAndTags } from "@/types/types"
 import { useEffect, useState } from "react";
-import {DragDropContext, Droppable} from "react-beautiful-dnd";
+import {DragDropContext, DropResult, Droppable} from "react-beautiful-dnd";
 import { Button } from "./components/ui/button";
 import { Flag, Plus } from "lucide-react";
 import CustomModel from "@/global/custom-model";
@@ -14,11 +14,11 @@ type Props = {
     pipelineId: string,
     pipelineDetails: Pipeline,
     subaccountId: string,
-    //updateLanesOrder: (lanes: Lane[]) => Promise<void>,
-    //updateTicketsOrder: (tickets: Ticket[]) => Promise<void>
+    updateLanesOrder: (lanes: Lane[]) => Promise<void>,
+    updateTicketsOrder: (tickets: Ticket[]) => Promise<void>
 }
 
-export default function PipelineView({lanes, pipelineDetails, pipelineId, subaccountId}: Props) {
+export default function PipelineView({lanes, pipelineDetails, pipelineId, subaccountId, updateLanesOrder, updateTicketsOrder}: Props) {
   const {setOpen} = useModal();
 
 
@@ -27,12 +27,10 @@ export default function PipelineView({lanes, pipelineDetails, pipelineId, subacc
     item.tickets?.forEach((ticket) =>{
       ticketsFromAllLanes.push(ticket)
     })
-  })
+  });
 
-  const [allLanes, setAllLanes] = useState<LanesDetails[]>();
+const [allLanes, setAllLanes] = useState<LanesDetails[]>();
 const [allTickets, setAllTickets] = useState(ticketsFromAllLanes);
-
-
 
   const handleAddLane = () => {
     setOpen(
@@ -46,10 +44,88 @@ const [allTickets, setAllTickets] = useState(ticketsFromAllLanes);
   }
  
 
-
   useEffect(() => {
-    setAllLanes(lanes);
+    setAllLanes(lanes); // Update allLanes state if lanes prop changes
   }, [lanes])
+
+  const onDragEnd = (dropResult: DropResult) => {
+    const { destination, source, type } = dropResult;
+    if (
+      !destination ||
+      (destination.droppableId === source.droppableId &&
+        destination.index === source.index)
+    ) {
+      return;
+    }
+  
+    switch (type) {
+      case 'lane': {
+        if (!allLanes) return; // Ensure allLanes is defined
+  
+        const newLanes = [...allLanes.slice(0, source.index), ...allLanes.slice(source.index + 1)];
+        newLanes.splice(destination.index, 0, allLanes[source.index]);
+        
+        const orderedLanes = newLanes.map((lane: LanesDetails, idx: number) => {
+          return { ...lane, order: idx };
+        });
+  
+        setAllLanes(orderedLanes);
+        updateLanesOrder(orderedLanes);
+        break;
+      }
+  
+      case 'ticket': {
+        if (!allLanes) return; // Ensure allLanes is defined
+  
+        const newLanes = [...allLanes];
+        const originLane = newLanes.find((lane) => lane.id === source.droppableId);
+        const destinationLane = newLanes.find((lane) => lane.id === destination.droppableId);
+  
+        if (!originLane || !destinationLane) {
+          return;
+        }
+  
+        if (source.droppableId === destination.droppableId) {
+          const newOrderedTickets = [...originLane.tickets.slice(0, source.index), ...originLane.tickets.slice(source.index + 1)];
+          newOrderedTickets.splice(destination.index, 0, originLane.tickets[source.index]);
+  
+          const orderedTickets = newOrderedTickets.map((ticket, idx) => {
+            return { ...ticket, order: idx };
+          });
+  
+          originLane.tickets = orderedTickets;
+          setAllLanes(newLanes);
+          updateTicketsOrder(orderedTickets);
+        } else {
+          const [currentTicket] = originLane.tickets.splice(source.index, 1);
+  
+          originLane.tickets.forEach((ticket, idx) => {
+            ticket.order = idx;
+          });
+  
+          destinationLane.tickets.splice(destination.index, 0, {
+            ...currentTicket,
+            laneId: destination.droppableId,
+          });
+  
+          destinationLane.tickets.forEach((ticket, idx) => {
+            ticket.order = idx;
+          });
+          setAllLanes(newLanes);
+          updateTicketsOrder([
+            ...destinationLane.tickets,
+            ...originLane.tickets,
+          ]);
+        }
+        break;
+      }
+  
+      default:
+        break;
+    }
+  };
+  
+
   return (
     <DragDropContext onDragEnd={() => {}}>
       <div className="bg-white/60 dark:bg-background/60 rounded-xl p-4 use-automation-zoom-in">
@@ -85,7 +161,7 @@ const [allTickets, setAllTickets] = useState(ticketsFromAllLanes);
                 index={index}
                 key={lane.id}
                 pipelineId={pipelineId}
-                tickets={lane.Tickets || []}
+                tickets={lane.tickets || []}
                  />
   
               ))}

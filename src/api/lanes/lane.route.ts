@@ -45,6 +45,26 @@ export const getAllLanes = async () => {
 }
 
 
+export const updateLane = async (laneId: string, value: Partial<ValueInterface>) => {
+    const token = sessionStorage.getItem("token");
+
+    const res = await fetch(`${API_BASE_URL}/api/lane/${laneId}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(value)
+    });
+
+    if (!res.ok) return null;
+
+    const response = await res.json();
+
+    return response.data;
+}
+
+
 export const getAllLaneWherePipelineId = async (pipelineId:string) => {
     const token = sessionStorage.getItem("token");
 

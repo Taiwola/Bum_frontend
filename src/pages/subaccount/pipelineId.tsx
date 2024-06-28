@@ -6,7 +6,8 @@ import PipelineView from "@/component/pipelineView";
 import PipelineinfoBar from "@/global/pipeline-infoBar";
 import { Pipeline } from "@/types/types";
 import { useQuery } from "react-query";
-import { useParams } from "react-router-dom"
+import { useParams } from "react-router-dom";
+import { updateLanesOrder, updateTicketsOrder } from "@/lib/queries";
 
 type Props = {
 }
@@ -63,8 +64,9 @@ export default function PipelinePage({}: Props) {
         pipelineDetails={pipelineDetails}
         pipelineId={pipelineDetails?.id as string}
         subaccountId={Id as string}
-        // updateLanesOrder={updateLanesOrder}
+        updateLanesOrder={updateLanesOrder}
         lanes={lanes}
+        updateTicketsOrder={updateTicketsOrder}
         /></TabsContent>
         <TabsContent value="settings"><PipelineSettings 
         pipelineId={pipelineId as string}

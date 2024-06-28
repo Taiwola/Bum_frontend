@@ -57,7 +57,6 @@ interface PipelaneLaneProps {
           });
         }
       })
-
       const laneAmt = useMemo(() => {
         return tickets?.reduce(
           (sum: number, ticket) => sum + (Number(ticket?.value) || 0),

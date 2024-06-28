@@ -4,12 +4,13 @@ import { createNotification, get_all_notification } from "@/api/notifications/ro
 import { get_all_subaccount, get_subaccount } from "@/api/subaccount/route";
 import { delete_user, get_user, update_user } from "@/api/user/route";
 import { userDataType } from "@/form/userDetails";
-import { AgencyType, Notification, PermissionsType, SubAccountType, UserType } from "@/types/types";
+import { AgencyType, Lane, Notification, PermissionsType, SubAccountType, Ticket, UserType } from "@/types/types";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useToast } from "@/component/components/ui/use-toast";
 import { get_one_user_permissions } from "@/api/permission/permission.route.";
-import { deleteLane } from "@/api/lanes/lane.route";
+import { deleteLane, updateLane } from "@/api/lanes/lane.route";
 import { get_one_tag_where_subacctId } from "@/api/tags/tag.route";
+import { update_ticket } from "@/api/ticket/ticket.route";
 
 
 export interface NotificationInterface {
@@ -238,4 +239,65 @@ export  const delete_lane = async (laneId: string) => {
 export const getTagWhereSubAccountExist = async (subAccountId: string) => {
     const data = await get_one_tag_where_subacctId(subAccountId);
     return data;
+}
+
+
+export const updateLanesOrder = async (lanes: Lane[]) => {
+
+    try {
+        const lane = lanes?.map(async (lane) => {
+            const options = {
+                order: lane.order
+            }
+            const update = await updateLane(lane.id, options);
+    
+            return update;
+        });
+    
+        if (lane) {
+            console.log('🟢 Done reordered 🟢')
+        } else {
+            console.log('🔴 Something went wrong 🔴')
+        }
+    } catch (error) {
+        console.log(error, 'ERROR UPDATE LANES ORDER')
+    }
+}
+
+
+export const updateTicketsOrder = async (tickets: Ticket[]) => {
+    const ticket = tickets.map(async (ticket) => {
+        const options = {
+            laneId: ticket.laneId
+        }
+        const tic = await update_ticket(ticket.id, options);
+
+        return tic
+    })
+
+    if (ticket) {
+        console.log('🟢 Done reordered 🟢')
+    } else {
+        console.log('🔴 Something went wrong 🔴')
+    }
+
+    try {
+        const ticket = tickets.map(async (ticket) => {
+            const options = {
+                order: ticket.order,
+                laneId: ticket.laneId
+            }
+            const tic = await update_ticket(ticket.id, options);
+    
+            return tic
+        })
+    
+        if (ticket) {
+            console.log('🟢 Done reordered 🟢')
+        } else {
+            console.log('🔴 Something went wrong 🔴')
+        }
+    } catch (error) {
+        console.log(error, '🔴 ERROR UPDATE TICKET ORDER')
+    }
 }

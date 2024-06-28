@@ -21,7 +21,6 @@ type Props = {
 
 export default function PipelineTicket({ticket, index}: Props) {
 
-
   const handleClickEdit = () => {
     console.log("clicked");
   }
@@ -59,7 +58,7 @@ export default function PipelineTicket({ticket, index}: Props) {
           <AlertDialog>
             <DropdownMenu>
               <Card className='my-4 dark:bg-slate-900 bg-white shadow-none transition-all'>
-                <CardHeader className='p-12'>
+                <CardHeader className='p-[12px]'>
                   <CardTitle className='flex items-center justify-between'>
                     <span className='text-lg w-full'>{ticket.name}</span>
                     <DropdownMenuTrigger>

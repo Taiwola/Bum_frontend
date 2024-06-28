@@ -149,6 +149,7 @@ export type AgencyType = {
     subAccountId: string;
     laneId: string;
     customerId: string;
+    order: number;
     assignedUserId: string;
     subAccount: SubAccountType;
     assignedUser: UserType;
